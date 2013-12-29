@@ -295,7 +295,10 @@ ezGame.register("loader",function(eg){
 });
 
 
-
+/* 
+ * 图形模块
+ * 包含点、矩形、圆、文本对象
+ */
 ezGame.register("shape",function(eg){
 
     /*
@@ -646,6 +649,7 @@ ezGame.register("shape",function(eg){
 
 /*
  * 输入模块
+ * 按键重命名、按键事件绑定
  * input module
  */
 ezGame.register("input",function(eg){
@@ -900,7 +904,7 @@ ezGame.register("collision",function(eg){
 });
 
 /* 
- * 游戏循环
+ * 游戏循环模块
  */
 ezGame.register("loop",function(eg){
     var tid, interval;
@@ -983,12 +987,39 @@ ezGame.register("sprite",function(eg){
 
     var postive_infinity = Number.POSITIVE_INFINITY;          
 
+    var SpriteSheet = function (src, options) {
+        if(!(this instanceof arguments.callee)){
+            return new arguments.callee(src, options);
+        }
+        this.init(src, options);
+    };
+
+    SpriteSheet.prototype = {
+        init : function (image, options) {
+            // 默认为图片的高度/宽度
+            var defaultOptions = {
+                x : 0,
+                y : 0,
+                widht : eg.loader.loadedImgs[image].width, 
+                height : eg.loader.loadedImgs[image].height
+            };
+            options = eg.core.extend(defaultOptions, options);
+            this.image = image;
+            this.x = options.x;
+            this.y = options.y;
+            this.width = options.width;
+            this.height = options.height;
+            this.id = new Date().getTime();
+        },
+    };
+
     var Sprite = function(id, options) {
         if(!(this instanceof arguments.callee)){
             return new arguments.callee(id, options);
         }
         this.init(id, options);
     }
+
     Sprite.prototype = {
         init : function(options){
             var defaultObj = {
@@ -1012,7 +1043,8 @@ ezGame.register("sprite",function(eg){
             };
 
             options = options || {};
-            options = cg.core.extend(defaultObj, options);
+            options = eg.core.extend(defaultObj, options);
+
             this.x = options.x;
             this.y = options.y;
             this.angle = options.angle;
@@ -1032,33 +1064,36 @@ ezGame.register("sprite",function(eg){
 
             this.spriteSheetList = {};
             if(options.src){    //传入图片路径
-                this.setCurrentImage(options.src,options.imgX,options.imgY);
+                this.setCurrentImage(options.src, options.imgX, options.imgY);
             }
             else if(options.spriteSheet){//传入spriteSheet对象
                 this.addAnimation(options.spriteSheet);     
                 setCurrentAnimation(options.spriteSheet);
             }
         },
+
         /**
          *返回包含该sprite的矩形对象
          **/
-        getRect:function(){
-            return new cg.shape.Rect({x:this.x,y:this.y,width:this.width,height:this.height});
+        getRect : function(){
+            return new eg.shape.Rect({x: this.x, y: this.y, width: this.width, height: this.height});
         },
-        /**
-         *添加动画
-         **/
-        addAnimation:function(spriteSheet){
-            this.spriteSheetList[spriteSheet.id]=spriteSheet;   
+
+        /*
+         * 添加动画
+         */
+        addAnimation : function(spriteSheet){
+            this.spriteSheetList[spriteSheet.id] = spriteSheet;   
         },
-        /**
-         *设置当前显示动画
-         **/
-        setCurrentAnimation:function(id){//可传入id或spriteSheet
-            if(!this.isCurrentAnimation(id)){
-                if(cg.core.isString(id)){
-                    this.spriteSheet=this.spriteSheetList[id];
-                    this.image=this.imgX=this.imgY=undefined;
+
+        /*
+         * 设置当前显示动画
+         */
+        setCurrentAnimation : function(id) {    //可传入id或spriteSheet
+            if(!this.isCurrentAnimation(id)) {
+                if(eg.core.isString(id)){
+                    this.spriteSheet = this.spriteSheetList[id];
+                    this.image = this.imgX = this.imgY = undefined;
                 }
                 else if(cg.core.isObject(id)){
                     this.spriteSheet=id;
@@ -1068,9 +1103,10 @@ ezGame.register("sprite",function(eg){
             }
 
         },
-        /**
-         *判断当前动画是否为该id的动画
-         **/
+
+        /*
+         * 判断当前动画是否为该id的动画
+         */
         isCurrentAnimation:function(id){
             if(cg.core.isString(id)){
                 return (this.spriteSheet&&this.spriteSheet.id===id);
@@ -1079,34 +1115,37 @@ ezGame.register("sprite",function(eg){
                 return this.spriteSheet===id;
             }
         },
-        /**
-         *设置当前显示图像
-         **/
-        setCurrentImage:function(src,imgX,imgY){
+
+        /*
+         * 设置当前显示图像
+         */
+        setCurrentImage : function(src,imgX,imgY){
             if(!this.isCurrentImage(src,imgX,imgY)){
                 imgX=imgX||0;
                 imgY=imgY||0;
-                this.image=cg.loader.loadedImgs[src];   
+                this.image=eg.loader.loadedImgs[src];   
                 this.imgX=imgX;
                 this.imgY=imgY; 
-                this.spriteSheet=undefined;
+                this.spriteSheet = undefined;
             }
         },
+
         /**
-         *判断当前图像是否为该src的图像
+         * 判断当前图像是否为该src的图像
          **/
-        isCurrentImage:function(src,imgX,imgY){
+        isCurrentImage : function(src,imgX,imgY){
             imgX=imgX||0;
             imgY=imgY||0;
             var image=this.image;
-            if(cg.core.isString(src)){
+            if(eg.core.isString(src)){
                 return (image&&image.srcPath===src&&this.imgX===imgX&&this.imgY===imgY);
             }
         },
-        /**
-         *设置移动参数
-         **/
-        setMovement:function(options){
+
+        /*
+         * 设置移动参数
+         */
+        setMovement : function(options){
             isUndefined=cg.core.isUndefined;
             isUndefined(options.speedX)?this.speedX=this.speedX:this.speedX=options.speedX;
             isUndefined(options.speedY)?this.speedY=this.speedY:this.speedY=options.speedY;
@@ -1117,7 +1156,6 @@ ezGame.register("sprite",function(eg){
             isUndefined(options.maxY)?this.maxY=this.maxY:this.maxY=options.maxY;
             isUndefined(options.minX)?this.minX=this.minX:this.minX=options.minX;
             isUndefined(options.minY)?this.minY=this.minY:this.minY=options.minY;
-
 
             if(this.aX!=0){
                 this.startTimeX=new Date().getTime();
@@ -1131,132 +1169,123 @@ ezGame.register("sprite",function(eg){
             }
 
         },
-        /**
-         *重置移动参数回到初始值
-         **/
-        resetMovement:function(){
-            this.speedX=0;
-            this.speedY=0;
-            this.aX=0;
-            this.aY=0;
-            this.maxSpeedX=postive_infinity;
-            this.maxSpeedY=postive_infinity;
-            this.maxX=postive_infinity;
-            this.minX=-postive_infinity;
-            this.maxY=postive_infinity;
-            this.minY=-postive_infinity;
+
+        /*
+         * 重置移动参数回到初始值
+         */
+        resetMovement : function(){
+            this.speedX = 0;
+            this.speedY = 0;
+            this.aX = 0;
+            this.aY = 0;
+            this.maxSpeedX = postive_infinity;
+            this.maxSpeedY = postive_infinity;
+            this.maxX = postive_infinity;
+            this.minX = -postive_infinity;
+            this.maxY = postive_infinity;
+            this.minY = -postive_infinity;
         },
-        /**
-         *更新位置和帧动画
-         **/
-        update:function(){
-            if(this.aX!=0){
-                var now=new Date().getTime();
-                var durationX=now-this.startTimeX;
-                var speedX=this.oriSpeedX+this.aX*durationX/1000;
-                if(this.maxSpeedX<0){
-                    this.maxSpeedX*=-1;
+
+        /*
+         * 更新位置和帧动画
+         */
+        update : function(){
+            if(this.aX != 0){
+                var now = new Date().getTime();
+                var durationX = now - this.startTimeX;
+                var speedX = this.oriSpeedX + this.aX * durationX / 1000;
+                if(this.maxSpeedX < 0){
+                    this.maxSpeedX *= -1;
                 }
-                if(speedX<0){
-                    this.speedX=Math.max(speedX,this.maxSpeedX*-1)  ;
+                if(speedX < 0){
+                    this.speedX = Math.max(speedX, this.maxSpeedX * -1)  ;
                 }
                 else{
                     this.speedX=Math.min(speedX,this.maxSpeedX);
                 }
             }
-            if(this.aY!=0){
-                var now=new Date().getTime();
-                var durationY=now-this.startTimeY;
-                this.speedY=this.oriSpeedY+this.aY*durationY/1000;  
+             
+            if(this.aY != 0){
+                var now = new Date().getTime();
+                var durationY = now - this.startTimeY;
+                this.speedY = this.oriSpeedY + this.aY * durationY / 1000;  
             }
-            this.move(this.speedX,this.speedY);
 
+            this.move(this.speedX, this.speedY);
 
-            if(this.spriteSheet){//更新spriteSheet动画
-                this.spriteSheet.x=this.x
-                    this.spriteSheet.y=this.y;
+            if(this.spriteSheet) {   //更新spriteSheet动画
+                this.spriteSheet.x = this.x;
+                this.spriteSheet.y = this.y;
                 this.spriteSheet.update();
             }
         },
-        /**
-         *绘制出sprite
-         **/
-        draw:function(){
-            var context=cg.context;
+
+        /*
+         * 绘制出sprite
+         */
+        draw : function(){
             if(this.spriteSheet){
-                this.spriteSheet.x=this.x
-                    this.spriteSheet.y=this.y;
                 this.spriteSheet.draw();
             }
-            else if(this.image){
-                context.save()
-                    context.translate(this.x, this.y);
-                context.rotate(this.angle * Math.PI / 180);
-                context.drawImage(this.image,this.imgX,this.imgY,this.width,this.height,0,0,this.width,this.height);
-                context.restore();
-            }
+        },
 
-        },
-        /**
-         *移动一定距离
-         **/
-        move:function(dx,dy){
-            dx=dx||0;
-            dy=dy||0;
-            var x=this.x+dx;
-            var y=this.y+dy;
-            this.x=Math.min(Math.max(this.minX,x),this.maxX);
-            this.y=Math.min(Math.max(this.minY,y),this.maxY);
+        /*
+         * 移动一定距离
+         */
+        move : function(dx, dy){
+            dx = dx || 0;
+            dy = dy || 0;
+            var x = this.x+dx;
+            var y = this.y+dy;
+            this.x = Math.min(Math.max(this.minX,x), this.maxX);
+            this.y = Math.min(Math.max(this.minY,y), this.maxY);
             return this;
+        },
 
-        },
-        /**
-         *移动到某处
-         **/
-        moveTo:function(x,y){
-            this.x=Math.min(Math.max(this.minX,x),this.maxX);
-            this.y=Math.min(Math.max(this.minY,y),this.maxY);
+        /*
+         * 移动到某处
+         */
+        moveTo: function(x, y){
+            this.x = Math.min(Math.max(this.minX, x), this.maxX);
+            this.y = Math.min(Math.max(this.minY, y), this.maxY);
             return this;
         },
-        /**
-         *旋转一定角度
-         **/
-        rotate:function(da){
-            this.angle+=da;
+
+        /*
+         * 旋转一定角度
+         */
+        rotate : function(da){
+            this.angle += da;
             return this;
         },
-        /**
-         *旋转到一定角度
-         **/
-        rotateTo:function(){
-            this.angle=da;
+
+        /*
+         * 旋转到一定角度
+         */
+        rotateTo : function(a){
+            this.angle = a;
             return this;
 
         },
-        /**
-         *改变一定尺寸
-         **/
-        resize:function(dw,dh){
-            this.width+=dw;
-            this.height+=dh;
+
+        /*
+         * 改变一定尺寸
+         */
+        resize : function(dw,dh){
+            this.width += dw;
+            this.height += dh;
             return this;
         },
-        /**
-         *改变到一定尺寸
-         **/
-        resizeTo:function(width,height){
-            this.width=width;
-            this.height=height;
+
+        /*
+         * 改变到一定尺寸
+         */
+        resizeTo : function(width, height){
+            this.width = width;
+            this.height = height;
             return this;
         }
-
     }
-    this.Sprite=Sprite;                           
-
+    this.Sprite = Sprite;                           
 });
-/* 
- * 动画
- */
-
-
 
