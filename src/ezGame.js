@@ -4,15 +4,15 @@
  * @description A easy Javascript 2D game framework base HTML5. 
  */
 
-(function (window, undefined){
+(function (window, undefined) {
     var document = window.document;
     var ezGame = {
-        init: function (options){
+        init: function (options) {
             options = options || {};
             this.canvas = document.createElement("canvas");
             this.context = this.canvas.getContext('2d');
 
-            this.size = options.size || [400,400];
+            this.size = options.size || [400, 400];
             this.canvas.width = this.width = this.size[0];
             this.canvas.height = this.height = this.size[1];
             this.bgColor = options.bgColor || "#fff";
@@ -20,7 +20,7 @@
             this.fps = options.fps || 30;
             this.title = this.core.$('title')[0];
 
-            //this.spriteList = new ezGame.SpriteList();
+            this.spriteList = [];
 
             this.canvas.style.width = this.width;
             this.canvas.style.height = this.height;
@@ -37,21 +37,21 @@
 
             return this;
         },
-        
+
         /**
          * 模块注册
          * @prama {string} namespace 模块名
          * @prama {Function(ezGame)} func 回调函数，模块的内容
          * @return null
          */
-        register: function (namespace, func){
+        register: function (namespace, func) {
             var ns = namespace.split("."),
                 parent = this;
-            for(var i = 0; i < ns.length; i++) {
+            for (var i = 0; i < ns.length; i++) {
                 parent[ns[i]] = parent[ns[i]] === undefined ? {} : parent[ns[i]];
                 parent = parent[ns[i]];
             }
-            if(func) {
+            if (func) {
                 func.call(parent, this);
             }
 
@@ -66,57 +66,73 @@
 /**
  * 核心/工具模块
  */
-ezGame.register('core', function (eg){
+ezGame.register('core', function (eg) {
     /** 
      * @description ezGame的选择器，返回选中的元素的集合
      * @param {String} id 选择器
      * @param {HTMLNode} parent 父元素，默认为document
      * @return {Array} 选中元素的集合
      */
-    this.$ = function (id, parent) { 
+    this.$ = function (id, parent) {
         parent = parent || document;
         return parent.querySelectorAll(id);
     }
-    
+
+    /**
+     * 类继承辅助函数, 不继承父对象的实例属性,只继承父对象的原型
+     * @param {Object} C 子对象
+     * @param {Object} P 父对象
+     * @return {undefined}
+     */
+    this.inherit = function () { 
+        var F = function () {};
+        return function (C, P) {
+            F.prototype = P.prototype;
+            C.prototype = new F();
+            C.uber = P.prototype;
+            C.prototype.constructor = C;
+        }
+    }();
+
     /**
      * 是否为undefined
      */
-    this.isUndefined = function(elem) {
+    this.isUndefined = function (elem) {
         return typeof elem === 'undefined';
     };
 
     /**
      * @destination 是否为数组
      */
-    this.isArray = function(elem) {
+    this.isArray = function (elem) {
         return Object.prototype.toString.call(elem) === "[object Array]";
     };
 
     /**
      * @destination 是否为Object类型
      */
-    this.isObject = function(elem) {
+    this.isObject = function (elem) {
         return elem === Object(elem);
     };
 
     /**
      * @destination 是否为字符串类型
      */
-    this.isString = function(elem) {
+    this.isString = function (elem) {
         return Object.prototype.toString.call(elem) === "[object String]";
     };
-     
+
     /**
      * @destination 是否为数值类型
      */
-    this.isNum = function(elem) {
+    this.isNum = function (elem) {
         return Object.prototype.toString.call(elem) === "[object Number]";
     };
 
     /**
      * @destination 是否为function
      */
-    this.isFunction = function(elem) {
+    this.isFunction = function (elem) {
         return Object.prototype.toString.call(elem) === "[object Function]";
     };
 
@@ -126,7 +142,7 @@ ezGame.register('core', function (eg){
      * @param {Object} 扩展来源
      * @prama {boolean} 是否覆盖原有属性,默认true
      */
-    this.extend = function(destination, source, isCover) {
+    this.extend = function (destination, source, isCover) {
         var isUndefined = this.isUndefined;
         (isUndefined(isCover)) && (isCover = true);
         for (var name in source) {
@@ -147,7 +163,7 @@ ezGame.register('core', function (eg){
         var counter = 0;
         for (var item in obj) {
             if (obj.hasOwnProperty(item)) {
-                counter ++ ;
+                counter++;
             }
         }
         return counter;
@@ -165,7 +181,7 @@ ezGame.register('core', function (eg){
      * @param {HTMLElement} element DOM元素
      * @return {Object} left和top的值
      */
-    this.getElementPos = function(element) {
+    this.getElementPos = function (element) {
         var left = 0;
         var top = 0;
         while (element.offsetParent) {
@@ -173,14 +189,17 @@ ezGame.register('core', function (eg){
             top += element.offsetTop;
             element = element.offsetParent;
         }
-        return {x: left, y: top};
+        return {
+            x: left,
+            y: top
+        };
     }
 });
 
 /** 
  * @description 资源加载器
  */
-ezGame.register("loader",function(eg){
+ezGame.register("loader", function (eg) {
     /**
      * 开始加载资源
      * @param {Object} items 资源列表
@@ -189,21 +208,21 @@ ezGame.register("loader",function(eg){
      * @param {Function(game)} callbackforfail 加载失败时调用
      * @param {number} timeout 预设最长加载时间，如果，超过时间则设置为加载失败
      */
-    this.start = function(items, gameObj, callbackForSuccess, callbackForFail, timeout) {
+    this.start = function (items, gameObj, callbackForSuccess, callbackForFail, timeout) {
         this.total = eg.core.count(items);
-        this.loadedCount = 0;    // 图片已加载数
-        this.loadedPercent = 0;  // 图片已加载数
-        this.loadingImgs = {};   // 未加载图片集合
-        this.loadedImgs = {};   // 已加载图片集合
-        this.loadFailImgs  = {}; // 加载失败的图片集
-        for(var item in items){
+        this.loadedCount = 0; // 图片已加载数
+        this.loadedPercent = 0; // 图片已加载数
+        this.loadingImgs = {}; // 未加载图片集合
+        this.loadedImgs = {}; // 已加载图片集合
+        this.loadFailImgs = {}; // 加载失败的图片集
+        for (var item in items) {
             this.loadingImgs[item] = new Image();
             this.loadingImgs[item].src = items[item];
             this.loadingImgs[item].onload = (function (that, name) {
                 return function () {
                     that.loadedCount++;
                     that.loadedImgs[name] = that.loadingImgs[name];
-                    that.loadedPercent = Math.floor( that.loadedCount / that.total * 100 );
+                    that.loadedPercent = Math.floor(that.loadedCount / that.total * 100);
 
                     if (that.total === that.loadedCount) {
                         clearTimeout(sid);
@@ -218,7 +237,7 @@ ezGame.register("loader",function(eg){
             return function () {
                 if (that.loadedCount !== that.total) {
                     for (var i in that.loadingImgs) {
-                        if ( !(i in that.loadedImgs) ) {
+                        if (!(i in that.loadedImgs)) {
                             that.loadFailImgs[i] = that.loadingImgs[i].src;
                         }
                     }
@@ -228,7 +247,17 @@ ezGame.register("loader",function(eg){
                 }
             };
         })(this), timeout);
-    }
+    };
+
+    /**
+     * 通过图片名获取图片对象
+     * param {string|Image} name 图片名
+     * return {Image|undefined} 返回name对应的图像对象
+     */
+    this.getImage = function (name) {
+        return name.toString() === '[object HTMLImageElement]' ? name : this.loadedImgs[name];
+    };
+
 });
 
 
@@ -242,33 +271,33 @@ ezGame.register("shape", function (eg) {
      * @destination 更新right和bottom
      * @private
      * @prama {Shape} elem 图形对象
-     */ 
-    var _resetRightBottom = function(elem){
+     */
+    var _resetRightBottom = function (elem) {
         elem.right = elem.x + elem.width;
-        elem.bottom = elem.y + elem.height; 
+        elem.bottom = elem.y + elem.height;
     }
 
     /**
      * @description 矩形对象
      * @param {Object} options 默认为{x : 0, y : 0, width : 100, height ： 100, style : "red", isFill : true}
      * @return {Rect} 
-     */                                     
-    var Rect = function( options ) {
+     */
+    var Rect = function (options) {
         // 如果以ezGame.rect(options) 形式调用则return new rect(options)，避免直接调用函数
-        if( !(this instanceof arguments.callee) ) {
+        if (!(this instanceof arguments.callee)) {
             return new arguments.callee(options);
         }
         this.init(options);
     };
     Rect.prototype = {
-        init : function(options) {
+        init: function (options) {
             var defaultOptions = {
-                x : 0,
-                y : 0,
-                width : 100,
-                height : 100,
-                style : "red",
-                isFill : true
+                x: 0,
+                y: 0,
+                width: 100,
+                height: 100,
+                style: "red",
+                isFill: true
             };
             options = options || {};
             options = eg.core.extend(defaultOptions, options);
@@ -282,7 +311,7 @@ ezGame.register("shape", function (eg) {
          * @prama {Object} options 
          * @returns {Rect} 
          */
-        setOptions : function(options){
+        setOptions: function (options) {
             this.x = eg.core.isNum(options.x) ? options.x : this.x;
             this.y = eg.core.isNum(options.y) ? options.y : this.y;
             this.width = eg.core.isNum(options.width) ? options.width : this.width;
@@ -295,14 +324,13 @@ ezGame.register("shape", function (eg) {
         /**
          * 绘制矩形
          * @returns {Rect} 
-         */ 
-        draw : function() {
+         */
+        draw: function () {
             var context = eg.context;
-            if( this.isFill ) {
+            if (this.isFill) {
                 context.fillStyle = this.style;
                 context.fillRect(this.x, this.y, this.width, this.height);
-            }
-            else {
+            } else {
                 context.strokeStyle = this.style;
                 context.strokeRect(this.x, this.y, this.width, this.height);
             }
@@ -314,8 +342,8 @@ ezGame.register("shape", function (eg) {
          * @param {Num} dx x轴上的增量
          * @param {Num} dy y轴上的增量
          * @returns {Rect} 
-         */ 
-        move : function(dx, dy){
+         */
+        move: function (dx, dy) {
             dx = dx || 0;
             dy = dy || 0;
             this.x += dx;
@@ -330,8 +358,8 @@ ezGame.register("shape", function (eg) {
          * @param {Num} x x轴位置
          * @param {Num} y y轴位置
          * @returns {Rect} 
-         */ 
-        moveTo : function(x, y){
+         */
+        moveTo: function (x, y) {
             x = eg.core.isNum(x) ? x : this.x;
             y = eg.core.isNum(y) ? y : this.y;
             this.x = x;
@@ -345,8 +373,8 @@ ezGame.register("shape", function (eg) {
          * @param {Num} w 宽度的增量
          * @param {Num} h 高度的增量
          * @returns {Rect} 
-         */ 
-        resize : function(w, h){
+         */
+        resize: function (w, h) {
             w = w || 0;
             h = h || 0;
             this.width += w;
@@ -360,8 +388,8 @@ ezGame.register("shape", function (eg) {
          * @param {Num} width 宽度
          * @param {Num} height 高度
          * @returns {Rect} 
-         */ 
-        resizeTo : function(width, height){
+         */
+        resizeTo: function (width, height) {
             width = width || this.width;
             height = height || this.height;
             this.width = width;
@@ -376,37 +404,37 @@ ezGame.register("shape", function (eg) {
      * @param {Object} options 默认参数 
      *      { x : 100, y : 100, r : 100, startAngle : 0, endAngle : Math.PI * 2, antiClock : false, style : "red", isFill : true}
      * @returns {Circle} 
-     */     
-    var Circle = function(options){
-        if(!(this instanceof arguments.callee)){
+     */
+    var Circle = function (options) {
+        if (!(this instanceof arguments.callee)) {
             return new arguments.callee(options);
         }
         this.init(options);
     }
     Circle.prototype = {
-        init : function(options){
+        init: function (options) {
             //默认参数
             var defaultOptions = {
-                x : 100,
-                y : 100,
-                r : 100,
-                startAngle : 0,
-                endAngle : Math.PI * 2,
-                antiClock : false, //逆时针
-                style : "red",
-                isFill : true
+                x: 100,
+                y: 100,
+                r: 100,
+                startAngle: 0,
+                endAngle: Math.PI * 2,
+                antiClock: false, //逆时针
+                style: "red",
+                isFill: true
             };
             options = options || {};
             options = eg.core.extend(defaultOptions, options);
             this.setOptions(options);
         },
-        
+
         /**
          * 设置参数
          * @param {Object} options 参数表, 默认使用原来的参数
          * @returns {Circle}
          */
-        setOptions : function(options) {
+        setOptions: function (options) {
             this.x = eg.core.isNum(options.x) ? options.x : this.x;
             this.y = eg.core.isNum(options.y) ? options.y : this.y;
             this.r = eg.core.isNum(options.r) ? options.r : this.r;
@@ -417,20 +445,19 @@ ezGame.register("shape", function (eg) {
             this.isFill = eg.core.isUndefined(options.isFill) ? this.isFill : options.isFill;
             return this;
         },
-        
+
         /**
          * 绘制圆形
          * @returns {Circle}
          */
-        draw : function(){
+        draw: function () {
             var context = eg.context;
             context.beginPath();
             context.arc(this.x, this.y, this.r, this.startAngle, this.endAngle, this.antiClock);
-            if(this.isFill){
+            if (this.isFill) {
                 context.fillStyle = this.style;
                 context.fill();
-            }
-            else{
+            } else {
                 context.strokeStyle = this.style;
                 context.stroke();
             }
@@ -443,8 +470,8 @@ ezGame.register("shape", function (eg) {
          * @param {Num} dx x轴上的增量
          * @param {Num} dy y轴上的增量
          * @returns {Circle} 
-         */ 
-        move : function(dx, dy){
+         */
+        move: function (dx, dy) {
             dx = dx || 0;
             dy = dy || 0;
             this.x += dx;
@@ -457,8 +484,8 @@ ezGame.register("shape", function (eg) {
          * @param {Num} x x轴位置
          * @param {Num} y y轴位置
          * @returns {Circle} 
-         */ 
-        moveTo : function(x, y){
+         */
+        moveTo: function (x, y) {
             x = eg.core.isNum(x) ? x : this.x;
             y = eg.core.isNum(y) ? y : this.y;
             this.x = x;
@@ -470,8 +497,8 @@ ezGame.register("shape", function (eg) {
          * 放大或者缩小圆形
          * @param {Num} dr 半径增量
          * return {Circle}
-         */ 
-        resize : function(dr){
+         */
+        resize: function (dr) {
             dr = dr || 0;
             this.r += dr;
             return this;
@@ -481,45 +508,50 @@ ezGame.register("shape", function (eg) {
          * 将圆形改变到特定大小
          * @param {Num} r 半径
          * @return {Circle}
-         */ 
-        resizeTo : function(r){
-            r = eg.core.isNum(r) ? r :  this.r;
+         */
+        resizeTo: function (r) {
+            r = eg.core.isNum(r) ? r : this.r;
             this.r = r;
             return this;
-        }   
+        }
     }
 
     /**
      * 点
      */
     var Point = function (x, y) {
-        if( !(this instanceof arguments.callee) ) {
-            return new arguments.callee(x,y);
+        if (!(this instanceof arguments.callee)) {
+            return new arguments.callee(x, y);
         }
-        return new this.init({x:x, y:y, r:1});
+        return new this.init({
+            x: x,
+            y: y,
+            r: 1
+        });
     }
     Point.prototype = Circle.prototype;
 
-    var Text = function(text, options){
-        if(!(this instanceof arguments.callee)){
+    var Text = function (text, options) {
+        if (!(this instanceof arguments.callee)) {
             return new arguments.callee(text, options);
         }
-        this.init(text,options);
+        this.init(text, options);
     }
-    Text.prototype={
-        init:function(text,options){
+    Text.prototype = {
+        init: function (text, options) {
             // 默认值对象
-            var defaultOptions={
-                x:100,
-                y:100,
-                style:"red",
-                isFill:true
+            var defaultOptions = {
+                x: 100,
+                y: 100,
+                style: "red",
+                isFill: true,
+                font: '14px sans-serif',
             };
 
             options = options || {};
             options = eg.core.extend(defaultOptions, options);
             this.setOptions(options);
-            this.text = text;     
+            this.text = text;
         },
 
         /**
@@ -527,9 +559,9 @@ ezGame.register("shape", function (eg) {
          * @param {Object} options 
          * @return {Text} 
          */
-        setOptions:function(options){
-            this.x = options.x||this.x;
-            this.y = options.y||this.y;
+        setOptions: function (options) {
+            this.x = options.x || this.x;
+            this.y = options.y || this.y;
             this.maxWidth = options.maxWidth || this.maxWidth;
             this.font = options.font || this.font;
             this.textBaseline = options.textBaseline || this.textBaseline;
@@ -543,17 +575,16 @@ ezGame.register("shape", function (eg) {
          * 将文字渲染到canvas
          * return {Text} 
          */
-        draw : function(){
+        draw: function () {
             var context = eg.context;
             (!eg.core.isUndefined(this.font)) && (context.font = this.font);
             (!eg.core.isUndefined(this.textBaseline)) && (context.textBaseline = this.textBaseline);
             (!eg.core.isUndefined(this.textAlign)) && (context.textAlign = this.textAlign);
             (!eg.core.isUndefined(this.maxWidth)) && (context.maxWidth = this.maxWidth);
-            if(this.isFill){
+            if (this.isFill) {
                 context.fillStyle = this.style;
                 this.maxWidth ? context.fillText(this.text, this.x, this.y, this.maxWidth) : context.fillText(this.text, this.x, this.y);
-            }
-            else{
+            } else {
                 context.strokeStyle = this.style;
                 this.maxWidth ? context.strokeText(this.text, this.x, this.y, this.maxWidth) : context.strokeText(this.text, this.x, this.y);
             }
@@ -577,7 +608,7 @@ ezGame.register("shape", function (eg) {
         return shape instanceof Text;
     }
 
-    this.Point =Point;
+    this.Point = Point;
     this.Rect = Rect;
     this.Circle = Circle;
     this.Text = Text;
@@ -589,33 +620,33 @@ ezGame.register("shape", function (eg) {
  * 按键重命名、按键事件绑定
  * input module
  */
-ezGame.register("input",function(eg){
+ezGame.register("input", function (eg) {
     this.mouseX = 0;
     this.mouseY = 0;
 
-    var recordMouseMove = function(eve){
+    var recordMouseMove = function (eve) {
         var pageX,
-            pageY,
-            x,
-            y;
+        pageY,
+        x,
+        y;
         pageX = eve.pageX || eve.clientX + document.documentElement.scrollLeft - document.documentElement.clientLeft;
         pageY = eve.pageY || eve.clientY + document.documentElement.scrollTop - document.documentElement.clientTop;
         eg.input.mouseX = pageX - eg.canvas.x;
         eg.input.mouseY = pageY - eg.canvas.y;
-    };      
+    };
     window.addEventListener("mousemove", recordMouseMove);
 
     // 被按下的键的集合
-    var pressed_keys={};
+    var pressed_keys = {};
     // 要求禁止默认行为的键的集合
-    var preventDefault_keys={};
+    var preventDefault_keys = {};
     // 键盘按下触发的处理函数
-    var keydown_callbacks={};
+    var keydown_callbacks = {};
     // 键盘弹起触发的处理函数
     var keyup_callbacks = {};
 
     // 键盘编码映射
-    var k=[];
+    var k = [];
     k[8] = "backspace";
     k[9] = "tab";
     k[13] = "enter";
@@ -633,7 +664,7 @@ ezGame.register("input",function(eg){
     k[37] = "left";
     k[38] = "up";
     k[39] = "right";
-    k[40] = "down" ;
+    k[40] = "down";
     k[45] = "insert";
     k[46] = "delete";
 
@@ -660,78 +691,85 @@ ezGame.register("input",function(eg){
     k[221] = "closebracket";
     k[222] = "singlequote";
 
-    var numpadkeys = ["numpad1","numpad2","numpad3","numpad4","numpad5","numpad6","numpad7","numpad8","numpad9"];
-    var fkeys = ["f1","f2","f3","f4","f5","f6","f7","f8","f9"];
-    var numbers = ["0","1","2","3","4","5","6","7","8","9"];
-    var letters = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
-    for(var i = 0; numbers[i]; i++) { k[48+i] = numbers[i] }
-    for(var i = 0; letters[i]; i++) { k[65+i] = letters[i] }
-    for(var i = 0; numpadkeys[i]; i++) { k[96+i] = numpadkeys[i] }
-    for(var i = 0; fkeys[i]; i++) { k[112+i] = fkeys[i] }
-    
+    var numpadkeys = ["numpad1", "numpad2", "numpad3", "numpad4", "numpad5", "numpad6", "numpad7", "numpad8", "numpad9"];
+    var fkeys = ["f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8", "f9"];
+    var numbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+    var letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
+    for (var i = 0; numbers[i]; i++) {
+        k[48 + i] = numbers[i]
+    }
+    for (var i = 0; letters[i]; i++) {
+        k[65 + i] = letters[i]
+    }
+    for (var i = 0; numpadkeys[i]; i++) {
+        k[96 + i] = numpadkeys[i]
+    }
+    for (var i = 0; fkeys[i]; i++) {
+        k[112 + i] = fkeys[i]
+    }
+
     /**
      * 记录键盘按下的键,并运行注册在该事件上的函数
      */
-    var recordPress = function(eve){
+    var recordPress = function (eve) {
         var keyName = k[eve.keyCode];
-        pressed_keys[keyName] = true; 
-        if(keydown_callbacks[keyName]){
-            for(var i = 0, len = keydown_callbacks[keyName].length; i < len; i++){
+        pressed_keys[keyName] = true;
+        if (keydown_callbacks[keyName]) {
+            for (var i = 0, len = keydown_callbacks[keyName].length; i < len; i++) {
                 keydown_callbacks[keyName][i]();
             }
         }
-        if(keydown_callbacks["allKeys"]){
-            for(var i=0, len = keydown_callbacks["allKeys"].length; i < len; i++){
+        if (keydown_callbacks["allKeys"]) {
+            for (var i = 0, len = keydown_callbacks["allKeys"].length; i < len; i++) {
                 keydown_callbacks["allKeys"][i]();
             }
         }
-        if(preventDefault_keys[keyName]){
-            eg.core.preventDefault(eve);
+        if (preventDefault_keys[keyName]) {
+            eve.preventDefault();
         }
     }
 
     /**
      * 记录键盘松开的键,并运行注册在该事件上的函数 
-     */ 
-    var recordUp = function(eve){
+     */
+    var recordUp = function (eve) {
         var keyName = k[eve.keyCode];
         pressed_keys[keyName] = false;
-        if(keyup_callbacks[keyName]){
-            for(var i = 0, len = keyup_callbacks[keyName].length; i < len; i++){
+        if (keyup_callbacks[keyName]) {
+            for (var i = 0, len = keyup_callbacks[keyName].length; i < len; i++) {
                 keyup_callbacks[keyName][i]();
-            }   
+            }
         }
-        if(keyup_callbacks["allKeys"]){
-            for(var i = 0, len = keyup_callbacks["allKeys"].length; i < len; i++){
+        if (keyup_callbacks["allKeys"]) {
+            for (var i = 0, len = keyup_callbacks["allKeys"].length; i < len; i++) {
                 keyup_callbacks["allKeys"][i]();
             }
         }
-        if(preventDefault_keys[keyName]){
-            eg.core.preventDefault(eve);
+        if (preventDefault_keys[keyName]) {
+            eve.preventDefault();
         }
     }
-    window.addEventListener("keydown",recordPress);
-    window.addEventListener("keyup",recordUp);
+    window.addEventListener("keydown", recordPress);
+    window.addEventListener("keyup", recordUp);
 
     /**
      * 判断某个键是否按下
-     */ 
-    this.isPressed = function(keyName){
-        return !!pressed_keys[keyName]; 
+     */
+    this.isPressed = function (keyName) {
+        return !!pressed_keys[keyName];
     };
 
     /**
      * 禁止某个键按下的默认行为
      * @param {Array | String} keyName 要禁止默认行为的按键
-     */ 
-    this.preventDefault = function(keyName){
-        if(eg.core.isArray(keyName)){
-            for(var i = 0, len = keyName.length; i < len; i++){
+     */
+    this.preventDefault = function (keyName) {
+        if (eg.core.isArray(keyName)) {
+            for (var i = 0, len = keyName.length; i < len; i++) {
                 arguments.callee.call(this, keyName[i]);
             }
-        }
-        else{
-            preventDefault_keys[keyName]=true;
+        } else {
+            preventDefault_keys[keyName] = true;
         }
     }
 
@@ -739,11 +777,11 @@ ezGame.register("input",function(eg){
      * 绑定键盘按下事件, 可绑定多个事件
      * @param {String} keyName 按键名字
      * @param {Function} handler 事件函数
-     */ 
-    this.onKeyDown = function(keyName, handler){
+     */
+    this.onKeyDown = function (keyName, handler) {
         keyName = keyName || "allKeys";
-        if(eg.core.isUndefined(keydown_callbacks[keyName])){
-            keydown_callbacks[keyName] = [];                          
+        if (eg.core.isUndefined(keydown_callbacks[keyName])) {
+            keydown_callbacks[keyName] = [];
         }
         keydown_callbacks[keyName].push(handler);
     }
@@ -752,11 +790,11 @@ ezGame.register("input",function(eg){
      * 绑定键盘弹起事件, 可绑定多个事件
      * @param {String} keyName 按键名字
      * @param {Function} handler 事件函数
-     */ 
-    this.onKeyUp=function(keyName,handler){
+     */
+    this.onKeyUp = function (keyName, handler) {
         keyName = keyName || "allKeys";
-        if(eg.core.isUndefined(keyup_callbacks[keyName])){
-            keyup_callbacks[keyName] = [];                            
+        if (eg.core.isUndefined(keyup_callbacks[keyName])) {
+            keyup_callbacks[keyName] = [];
         }
         keyup_callbacks[keyName].push(handler);
     }
@@ -764,12 +802,11 @@ ezGame.register("input",function(eg){
     /**
      * 清除键盘按下事件处理程序
      * @param {String} keyName 按键名，为空时清除所有按键按下事件
-     */ 
-    this.clearDownCallbacks = function(keyName){
-        if(keyName){
-            keydown_callbacks[keyName]=[];
-        }
-        else{
+     */
+    this.clearDownCallbacks = function (keyName) {
+        if (keyName) {
+            keydown_callbacks[keyName] = [];
+        } else {
             keydown_callbacks = {};
         }
     }
@@ -777,32 +814,31 @@ ezGame.register("input",function(eg){
     /**
      * 清除键盘按键松开事件处理程序
      * @param {String} keyName 按键名，为空时清除所有按键松开事件
-     */ 
-    this.clearUpCallbacks = function(keyName){
-        if(keyName){
+     */
+    this.clearUpCallbacks = function (keyName) {
+        if (keyName) {
             keyup_callbacks[keyName] = [];
-        }
-        else{
+        } else {
             keyup_callbacks = {};
         }
-    }                                           
+    }
 });
 
 /**
  * 碰撞检测
  */
-ezGame.register("collision",function(eg){
+ezGame.register("collision", function (eg) {
     var shape = eg.shape;
     var pow = Math.pow;
     this.detection = function (objectA, objectB) {
         // 点和点
-        if (shape.isPoint(objectA) && shape.isPoint(objectB)){
+        if (shape.isPoint(objectA) && shape.isPoint(objectB)) {
             return objectA.x === objectB.x && objectA.y === objectB;
-        } 
+        }
 
         // 点和矩形间的碰撞
         if (shape.isPoint(objectA) && shape.isRect(objectB)) {
-            return (objectA.x >= objectB.x && objectA.x <= objectB.right && objectA.y >= objectB.y && objectA.y <= objectB.bottom);       
+            return (objectA.x >= objectB.x && objectA.x <= objectB.right && objectA.y >= objectB.y && objectA.y <= objectB.bottom);
         }
         if (shape.isRect(objectA) && shape.isPoint(objectB)) {
             return this.detection(objectB, objectA);
@@ -818,7 +854,7 @@ ezGame.register("collision",function(eg){
 
         // 圆 和 矩形 的碰撞
         if (shape.isCircle(objectA) && shape.isRect(objectB)) {
-            return (objectA.x + objectA.r >= objectB.x && objectA.x - objectA.r <= objectB.right && objectA.y + objectA.r >= objectB.y && objectA.y - objectA.r <= objectB.bottom);       
+            return (objectA.x + objectA.r >= objectB.x && objectA.x - objectA.r <= objectB.right && objectA.y + objectA.r >= objectB.y && objectA.y - objectA.r <= objectB.bottom);
         }
         if (shape.isRect(objectA) && shape.isCircle(objectB)) {
             return this.detection(objectB, objectA);
@@ -826,7 +862,7 @@ ezGame.register("collision",function(eg){
 
         // 矩形和矩形的碰撞 限制：只能是两个矩形都是平行的
         if (shape.isRect(objectA) && shape.isRect(objectB)) {
-            return ((objectA.right >= objectB.x && objectA.right <= objectB.right || objectA.x >= objectB.x && objectA.x < objectB.right) && (objectA.bottom > objectB.y && objectA.bottom < objectB.bottom || objectA.y < objectB.bottom && objectA.bottom > objectB.y));       
+            return ((objectA.right >= objectB.x && objectA.right <= objectB.right || objectA.x >= objectB.x && objectA.x < objectB.right) && (objectA.bottom > objectB.y && objectA.bottom < objectB.bottom || objectA.y < objectB.bottom && objectA.bottom > objectB.y));
         }
 
         // 圆和圆的碰撞
@@ -840,22 +876,22 @@ ezGame.register("collision",function(eg){
 /**
  * 游戏循环模块
  */
-ezGame.register("loop",function(eg){
+ezGame.register("loop", function (eg) {
     var tid, interval;
-        
-    var loop = function() {
+
+    var loop = function () {
         var _this = this;
         return function () {
-            if(!_this.pause && !_this.stop){
+            if (!_this.pause && !_this.stop) {
 
                 _this.now = new Date().getTime();
                 _this.duration = _this.now - _this.duration;
 
-                if(_this.gameObj.update){
+                if (_this.gameObj.update) {
                     _this.gameObj.update();
                 }
 
-                if(_this.gameObj.draw){
+                if (_this.gameObj.draw) {
                     eg.core.clearCanvas();
                     _this.gameObj.draw();
                 }
@@ -864,17 +900,17 @@ ezGame.register("loop",function(eg){
         }
     }
 
-    var GameLoop = function(gameObj, options){
-        if(!(this instanceof arguments.callee)) {
+    var GameLoop = function (gameObj, options) {
+        if (!(this instanceof arguments.callee)) {
             return new arguments.callee(gameObj, options);
         }
-        this.init(gameObj, options); 
+        this.init(gameObj, options);
     }
 
     GameLoop.prototype = {
-        init: function(gameObj, options) {
+        init: function (gameObj, options) {
             var defaultOptions = {
-                fps:60
+                fps: 60
             };
             options = options || {};
 
@@ -887,25 +923,25 @@ ezGame.register("loop",function(eg){
             this.stop = true;
         },
 
-        start : function(){
-            if(this.stop){      //如果是结束状态则可以开始
+        start: function () {
+            if (this.stop) { //如果是结束状态则可以开始
                 this.stop = false;
                 this.now = new Date().getTime();
                 this.startTime = new Date().getTime();
-                this.duration = 0;    
-                loop.call(this)();  
-            }   
+                this.duration = 0;
+                loop.call(this)();
+            }
         },
 
-        run : function(){
-            this.pause = false;   
-        },
-        
-        pause : function(){
-            this.pause = true;    
+        run: function () {
+            this.pause = false;
         },
 
-        end : function(){
+        pause: function () {
+            this.pause = true;
+        },
+
+        end: function () {
             this.stop = true;
             window.clearTimeout(timeId);
         }
@@ -914,6 +950,75 @@ ezGame.register("loop",function(eg){
     this.GameLoop = GameLoop;
 });
 
+/**
+ * 动画帧模块
+ */
+ezGame.register("spriteSheet", function (eg) {
+    var SpriteSheet = function (id, src, options) {
+        if (!(this instanceof arguments.callee)) {
+            return new arguments.callee(src, options);
+        }
+        this.init(id, src, options);
+    };
+
+    SpriteSheet.prototype = {
+        init: function (id, src, options) {
+            var image = eg.loader.getImage(src);
+            // 默认参数值
+            var defaultOptions = {
+                x: 0, // 目标图片在canvas上的位置
+                y: 0,
+                beginX: 0,
+                beginY: 0,
+                frameSize: [60, 60],
+                frameTotal: 1,
+                currentIndex: 0,
+                duration: 100, // 单位：ms
+                callback: undefined
+            };
+
+            options = eg.core.extend(defaultOptions, options);
+            this.id = id;
+            this.image = image;
+            this.x = options.x;
+            this.y = options.y;
+            this.beginX = options.beginX;
+            this.beginY = options.beginY;
+            this.frameSize = options.frameSize;
+            this.frameTotal = options.frameTotal;
+            this.currentIndex = options.currentIndex;
+            this.duration = options.duration; 
+            this.callback = options.callback;
+
+            this.last = new Date().getTime();
+            this.now = new Date().getTime();
+        },
+
+        update: function () {
+            this.now = new Date().getTime();
+            if (this.now - this.last >= this.duration) {
+                this.last = this.now;
+                this.currentIndex = this.currentIndex < this.frameTotal - 1 ? this.currentIndex + 1 : 0;
+            }
+        },
+
+        draw: function () {
+            eg.context.drawImage(
+                this.image, 
+                this.frameSize[0] * this.currentIndex + this.beginX, 
+                this.beginY, 
+                this.frameSize[0], 
+                this.frameSize[1], 
+                this.x, 
+                this.y,
+                this.frameSize[0], 
+                this.frameSize[1]
+            );
+        }
+    };
+    
+    this.SpriteSheet =  SpriteSheet;
+}); 
 
 
 /**
@@ -921,61 +1026,35 @@ ezGame.register("loop",function(eg){
  */
 ezGame.register("sprite", function (eg) {
 
-    var postive_infinity = Number.POSITIVE_INFINITY;          
+    var postive_infinity = Number.POSITIVE_INFINITY;
 
-    var SpriteSheet = function (src, options) {
-        if(!(this instanceof arguments.callee)){
-            return new arguments.callee(src, options);
+    var Sprite = function (options) {
+        if (!(this instanceof arguments.callee)) {
+            return new arguments.callee(options);
         }
-        this.init(src, options);
-    };
-
-    SpriteSheet.prototype = {
-        init : function (image, options) {
-            // 默认为图片的高度/宽度
-            var defaultOptions = {
-                x : 0,
-                y : 0,
-                widht : eg.loader.loadedImgs[image].width, 
-                height : eg.loader.loadedImgs[image].height
-            };
-            options = eg.core.extend(defaultOptions, options);
-            this.image = image;
-            this.x = options.x;
-            this.y = options.y;
-            this.width = options.width;
-            this.height = options.height;
-            this.id = new Date().getTime();
-        },
-    };
-
-    var Sprite = function(id, options) {
-        if(!(this instanceof arguments.callee)){
-            return new arguments.callee(id, options);
-        }
-        this.init(id, options);
+        this.init(options);
     }
 
     Sprite.prototype = {
-        init : function(options){
+        init: function (options) {
             var defaultObj = {
-                x         : 0,
-                y         : 0,
-                imgX      : 0,
-                imgY      : 0,
-                width     : 32,
-                height    : 32,
-                angle     : 0,
-                speedX    : 0,
-                speedY    : 0,
-                aX        : 0,
-                aY        : 0,
-                maxSpeedX : postive_infinity,
-                maxSpeedY : postive_infinity,
-                maxX      : postive_infinity,
-                maxY      : postive_infinity,
-                minX      : -postive_infinity,
-                minY      : -postive_infinity
+                x: 0,
+                y: 0,
+                imgX: 0,
+                imgY: 0,
+                width: 32,
+                height: 32,
+                angle: 0,
+                speedX: 0,
+                speedY: 0,
+                aX: 0,
+                aY: 0,
+                maxSpeedX: postive_infinity,
+                maxSpeedY: postive_infinity,
+                maxX: postive_infinity,
+                maxY: postive_infinity,
+                minX: -postive_infinity,
+                minY: -postive_infinity
             };
 
             options = options || {};
@@ -998,43 +1077,69 @@ ezGame.register("sprite", function (eg) {
             this.minX = options.minX;
             this.minY = options.minY;
 
+            this.spriteSheet = undefined;
             this.spriteSheetList = {};
-            if(options.src){    //传入图片路径
+            if (options.src) { //传入图片路径
                 this.setCurrentImage(options.src, options.imgX, options.imgY);
-            }
-            else if(options.spriteSheet){//传入spriteSheet对象
-                this.addAnimation(options.spriteSheet);     
-                setCurrentAnimation(options.spriteSheet);
+            } else if (options.spriteSheet) { //传入spriteSheet对象
+                this.addAnimation(options.spriteSheet);
+                this.setCurrentAnimation(options.spriteSheet);
             }
         },
 
         /**
          *返回包含该sprite的矩形对象
-         **/
-        getRect : function(){
-            return new eg.shape.Rect({x: this.x, y: this.y, width: this.width, height: this.height});
+         */
+        getRect: function () {
+            return new eg.shape.Rect({
+                x: this.x,
+                y: this.y,
+                width: this.width,
+                height: this.height
+            });
         },
+
+        /**
+         * 返回该sprite的position信息
+         * @return {Object} 
+         */
+        getPosition: function () {
+            return {x: this.x, y: this.y};
+        },
+
+        /**
+         * 设置sprite的位置
+         * @param {Object} pos 目标位置
+         * @param {int} pos.x 目标位置x坐标
+         * @param {int} pos.y 目标位置y坐标
+         * @return {Object} 返回当前对象的引用
+         */
+        setPosition: function (pos) {
+            this.x = pos.x || this.x;
+            this.y = pos.y || this.y;
+            return this;
+        },
+        
 
         /**
          * 添加动画
          */
-        addAnimation : function(spriteSheet){
-            this.spriteSheetList[spriteSheet.id] = spriteSheet;   
+        addAnimation: function (spriteSheet) {
+            this.spriteSheetList[spriteSheet.id] = spriteSheet;
         },
 
         /**
          * 设置当前显示动画
          */
-        setCurrentAnimation : function(id) {    //可传入id或spriteSheet
-            if(!this.isCurrentAnimation(id)) {
-                if(eg.core.isString(id)){
+        setCurrentAnimation: function (id) { //可传入id或spriteSheet
+            if (!this.isCurrentAnimation(id)) {
+                if (eg.core.isString(id)) {
                     this.spriteSheet = this.spriteSheetList[id];
                     this.image = this.imgX = this.imgY = undefined;
-                }
-                else if(cg.core.isObject(id)){
-                    this.spriteSheet=id;
+                } else if (eg.core.isObject(id)) {
+                    this.spriteSheet = id;
                     this.addAnimation(id);
-                    this.image=this.imgX=this.imgY=undefined;
+                    this.image = this.imgX = this.imgY = undefined;
                 }
             }
 
@@ -1043,73 +1148,70 @@ ezGame.register("sprite", function (eg) {
         /**
          * 判断当前动画是否为该id的动画
          */
-        isCurrentAnimation:function(id){
-            if(cg.core.isString(id)){
-                return (this.spriteSheet&&this.spriteSheet.id===id);
-            }
-            else if(cg.core.isObject(id)){
-                return this.spriteSheet===id;
+        isCurrentAnimation: function (id) {
+            if (eg.core.isString(id)) {
+                return (this.spriteSheet && this.spriteSheet.id === id);
+            } else if (eg.core.isObject(id)) {
+                return this.spriteSheet === id;
             }
         },
 
         /**
          * 设置当前显示图像
          */
-        setCurrentImage : function(src,imgX,imgY){
-            if(!this.isCurrentImage(src,imgX,imgY)){
+        setCurrentImage: function (name, imgX, imgY) {
+            if (!this.isCurrentImage(name, imgX, imgY)) {
                 imgX = imgX || 0;
                 imgY = imgY || 0;
-                this.image = eg.loader.loadedImgs[src];   
+                this.image = eg.loader.getImage(name);
                 this.imgX = imgX;
-                this.imgY = imgY; 
+                this.imgY = imgY;
                 this.spriteSheet = undefined;
             }
         },
 
         /**
-         * 判断当前图像是否为该src的图像
+         * 判断当前图像是否为该图像
          **/
-        isCurrentImage : function(src,imgX,imgY){
-            imgX=imgX||0;
-            imgY=imgY||0;
-            var image=this.image;
-            if(eg.core.isString(src)){
-                return (image&&image.srcPath===src&&this.imgX===imgX&&this.imgY===imgY);
-            }
+        isCurrentImage: function (name, imgX, imgY) {
+            imgX = imgX || 0;
+            imgY = imgY || 0;
+            var currentImage = this.image;
+            var image = eg.loader.getImage(name);
+            return (currentImage && image.src === currentImage.src && this.imgX === imgX && this.imgY === imgY);
         },
 
         /**
          * 设置移动参数
          */
-        setMovement : function(options){
-            isUndefined=cg.core.isUndefined;
-            isUndefined(options.speedX)?this.speedX=this.speedX:this.speedX=options.speedX;
-            isUndefined(options.speedY)?this.speedY=this.speedY:this.speedY=options.speedY;
+        setMovement: function (options) {
+            isUndefined = eg.core.isUndefined;
+            isUndefined(options.speedX) ? this.speedX = this.speedX : this.speedX = options.speedX;
+            isUndefined(options.speedY) ? this.speedY = this.speedY : this.speedY = options.speedY;
 
-            isUndefined(options.aX)?this.aX=this.aX:this.aX=options.aX;
-            isUndefined(options.aY)?this.aY=this.aY:this.aY=options.aY;
-            isUndefined(options.maxX)?this.maxX=this.maxX:this.maxX=options.maxX;
-            isUndefined(options.maxY)?this.maxY=this.maxY:this.maxY=options.maxY;
-            isUndefined(options.minX)?this.minX=this.minX:this.minX=options.minX;
-            isUndefined(options.minY)?this.minY=this.minY:this.minY=options.minY;
+            isUndefined(options.aX) ? this.aX = this.aX : this.aX = options.aX;
+            isUndefined(options.aY) ? this.aY = this.aY : this.aY = options.aY;
+            isUndefined(options.maxX) ? this.maxX = this.maxX : this.maxX = options.maxX;
+            isUndefined(options.maxY) ? this.maxY = this.maxY : this.maxY = options.maxY;
+            isUndefined(options.minX) ? this.minX = this.minX : this.minX = options.minX;
+            isUndefined(options.minY) ? this.minY = this.minY : this.minY = options.minY;
 
-            if(this.aX!=0){
-                this.startTimeX=new Date().getTime();
-                this.oriSpeedX=this.speedX;
-                isUndefined(options.maxSpeedX)?this.maxSpeedX=this.maxSpeedX:this.maxSpeedX=options.maxSpeedX;  
+            if (this.aX != 0) {
+                this.startTimeX = new Date().getTime();
+                this.oriSpeedX = this.speedX;
+                isUndefined(options.maxSpeedX) ? this.maxSpeedX = this.maxSpeedX : this.maxSpeedX = options.maxSpeedX;
             }
-            if(this.aY!=0){
-                this.startTimeY=new Date().getTime();
-                this.oriSpeedY=this.speedY;
-                isUndefined(options.maxSpeedY)?this.maxSpeedY=this.maxSpeedY:this.maxSpeedY=options.maxSpeedY;  
+            if (this.aY != 0) {
+                this.startTimeY = new Date().getTime();
+                this.oriSpeedY = this.speedY;
+                isUndefined(options.maxSpeedY) ? this.maxSpeedY = this.maxSpeedY : this.maxSpeedY = options.maxSpeedY;
             }
-
         },
 
         /**
          * 重置移动参数回到初始值
          */
-        resetMovement : function(){
+        resetMovement: function () {
             this.speedX = 0;
             this.speedY = 0;
             this.aX = 0;
@@ -1125,31 +1227,41 @@ ezGame.register("sprite", function (eg) {
         /**
          * 更新位置和帧动画
          */
-        update : function(){
-            if(this.aX != 0){
+        update: function () {
+            if (this.aX != 0) {
                 var now = new Date().getTime();
                 var durationX = now - this.startTimeX;
                 var speedX = this.oriSpeedX + this.aX * durationX / 1000;
-                if(this.maxSpeedX < 0){
+                console.log(durationX);
+                if (this.maxSpeedX < 0) {
                     this.maxSpeedX *= -1;
                 }
-                if(speedX < 0){
-                    this.speedX = Math.max(speedX, this.maxSpeedX * -1)  ;
-                }
-                else{
-                    this.speedX=Math.min(speedX,this.maxSpeedX);
+                if (speedX < 0) {
+                    this.speedX = Math.max(speedX, this.maxSpeedX * -1);
+                } else {
+                    this.speedX = Math.min(speedX, this.maxSpeedX);
                 }
             }
-             
-            if(this.aY != 0){
+
+            if (this.aY != 0) {
                 var now = new Date().getTime();
                 var durationY = now - this.startTimeY;
-                this.speedY = this.oriSpeedY + this.aY * durationY / 1000;  
+                var speedY = this.oriSpeedY + this.aY * durationY / 1000;
+                console.log(durationY);
+                if (this.maxSpeedY < 0) {
+                    this.maxSpeedY *= -1;
+                }
+                if (speedY < 0) {
+                    this.speedY = Math.max(speedY, this.maxSpeedY * -1);
+                } else {
+                    this.speedY = Math.min(speedY, this.maxSpeedY);
+                }
             }
 
             this.move(this.speedX, this.speedY);
-
-            if(this.spriteSheet) {   //更新spriteSheet动画
+            
+            //更新spriteSheet动画
+            if (this.spriteSheet) { 
                 this.spriteSheet.x = this.x;
                 this.spriteSheet.y = this.y;
                 this.spriteSheet.update();
@@ -1159,29 +1271,32 @@ ezGame.register("sprite", function (eg) {
         /**
          * 绘制出sprite
          */
-        draw : function(){
-            if(this.spriteSheet){
+        draw: function () {
+            var context = eg.context;
+            if (this.spriteSheet) {
                 this.spriteSheet.draw();
+            } else if (this.image) {
+                context.drawImage(this.image, this.imgX, this.imgY, this.width, this.height, this.x, this.y, this.width, this.height);
             }
         },
 
         /**
          * 移动一定距离
          */
-        move : function(dx, dy){
+        move: function (dx, dy) {
             dx = dx || 0;
             dy = dy || 0;
-            var x = this.x+dx;
-            var y = this.y+dy;
-            this.x = Math.min(Math.max(this.minX,x), this.maxX);
-            this.y = Math.min(Math.max(this.minY,y), this.maxY);
+            var x = this.x + dx;
+            var y = this.y + dy;
+            this.x = Math.min(Math.max(this.minX, x), this.maxX);
+            this.y = Math.min(Math.max(this.minY, y), this.maxY);
             return this;
         },
 
         /**
          * 移动到某处
          */
-        moveTo: function(x, y){
+        moveTo: function (x, y) {
             this.x = Math.min(Math.max(this.minX, x), this.maxX);
             this.y = Math.min(Math.max(this.minY, y), this.maxY);
             return this;
@@ -1190,7 +1305,7 @@ ezGame.register("sprite", function (eg) {
         /**
          * 旋转一定角度
          */
-        rotate : function(da){
+        rotate: function (da) {
             this.angle += da;
             return this;
         },
@@ -1198,7 +1313,7 @@ ezGame.register("sprite", function (eg) {
         /**
          * 旋转到一定角度
          */
-        rotateTo : function(a){
+        rotateTo: function (a) {
             this.angle = a;
             return this;
 
@@ -1207,7 +1322,7 @@ ezGame.register("sprite", function (eg) {
         /**
          * 改变一定尺寸
          */
-        resize : function(dw,dh){
+        resize: function (dw, dh) {
             this.width += dw;
             this.height += dh;
             return this;
@@ -1216,12 +1331,11 @@ ezGame.register("sprite", function (eg) {
         /**
          * 改变到一定尺寸
          */
-        resizeTo : function(width, height){
+        resizeTo: function (width, height) {
             this.width = width;
             this.height = height;
             return this;
         }
     }
-    this.Sprite = Sprite;                           
+    this.Sprite = Sprite;
 });
-
