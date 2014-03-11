@@ -1119,7 +1119,6 @@ ezGame.register("sprite", function (eg) {
             this.y = pos.y || this.y;
             return this;
         },
-        
 
         /**
          * 添加动画

@@ -52,7 +52,7 @@ window.onload = function () {
     Player.prototype.jump = function () {
         if(!this.isJump) {
             this.isJump = true;
-            this.setMovement({aY: 50, speedY: -18});
+            this.setMovement({aY: 60, speedY: -18});
             // 设置为中间的图像
             if(this.speedX < 0) {
                 this.setCurrentImage('playerSrc', 100, 60);
@@ -86,7 +86,7 @@ window.onload = function () {
 
         // 跳跃结束
         var position = this.getRect();
-        if(this.speedY > 0 && (position.bottom >= floorY)) {
+        if(this.speedY > 0 && (position.bottom + 10 >= floorY)) {
             this.isJump = false;
             this.setPosition({y:floorY - this.height});
             this.setMovement({aY: 0, speedY: 0});
