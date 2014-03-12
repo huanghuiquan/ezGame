@@ -1,4 +1,4 @@
-/**
+/*
  * @name ezGame
  * @author huanghuiquan
  * @description A easy Javascript 2D game framework base HTML5.
@@ -871,6 +871,7 @@ ezGame.register("collision", function (eg) {
         }
         return fasle;
     }
+    
 });
 
 /**
@@ -943,7 +944,7 @@ ezGame.register("loop", function (eg) {
 
         end: function () {
             this.stop = true;
-            window.clearTimeout(timeId);
+            window.clearTimeout(tid);
         }
     }
 
@@ -974,6 +975,7 @@ ezGame.register("spriteSheet", function (eg) {
                 frameTotal: 1,
                 currentIndex: 0,
                 duration: 100, // 单位：ms
+                isLoop: false,
                 callback: undefined
             };
 
@@ -988,18 +990,25 @@ ezGame.register("spriteSheet", function (eg) {
             this.frameTotal = options.frameTotal;
             this.currentIndex = options.currentIndex;
             this.duration = options.duration;
+            this.isLoop = options.isLoop;
             this.callback = options.callback;
 
             this.last = new Date().getTime();
             this.now = new Date().getTime();
         },
 
+        nextFrame: function () {
+            this.currentIndex = this.currentIndex < this.frameTotal - 1 ? this.currentIndex + 1 : 0;
+        },
+
         update: function () {
-            this.now = new Date().getTime();
-            if (this.now - this.last >= this.duration) {
-                this.last = this.now;
-                this.currentIndex = this.currentIndex < this.frameTotal - 1 ? this.currentIndex + 1 : 0;
-            }
+            if(this.isLoop) {
+                this.now = new Date().getTime();
+                if (this.now - this.last >= this.duration) {
+                    this.last = this.now;
+                    this.currentIndex = this.currentIndex < this.frameTotal - 1 ? this.currentIndex + 1 : 0;
+                }
+            } 
         },
 
         draw: function () {
@@ -1256,7 +1265,6 @@ ezGame.register("sprite", function (eg) {
             }
 
             this.move(this.speedX, this.speedY);
-
             //更新spriteSheet动画
             if (this.spriteSheet) {
                 this.spriteSheet.x = this.x;
@@ -1412,6 +1420,7 @@ ezGame.register("scene", function (eg) {
 
             // 场景相对最初始时的位置
             this.curPos = {x: this.x, y: this.y};
+            this.spriteList = [];
         },
 
         /**
@@ -1434,20 +1443,29 @@ ezGame.register("scene", function (eg) {
         clearCenterPlayer: function () {
             this.isCenterPlayer = false;
         },
-
+            
         /**
          * 逻辑更新，调整场景参数及各个其他物体的位置
          */
-        update: function () {
+        update: function (spriteList) {
             if(this.isCenterPlayer) {
                 // 背景循环
                 if(this.isLoop) {
+                    // 背景左滚
                     if(this.player.x > this.centerX + this.activityInterval) {
                         var offsetX = this.player.x - this.centerX - this.activityInterval;
                         if(this.imgWidth < this.x + this.width) {
                             this.x = 0;
                         }
+
                         this.x += offsetX;
+                        if(spriteList) {
+                            for (var i = 0, len = spriteList.length; i < len; i++) {
+                                if (this.player === spriteList[i])  continue;
+
+                                spriteList[i].x -= offsetX;
+                            }
+                        }
                         this.curPos.x += offsetX;
                         this.player.x = this.centerX + this.activityInterval;
                     }
@@ -1457,6 +1475,13 @@ ezGame.register("scene", function (eg) {
                             this.x = this.imgWidth - this.width;
                         }
                         this.x -= offsetX;
+                        if(spriteList) {
+                            for (var i = 0, len = spriteList.length; i < len; i++) {
+                                if (this.player === spriteList[i])  continue;
+
+                                spriteList[i].x += offsetX;
+                            }
+                        }
                         this.curPos.x -= offsetX;
                         this.player.x = this.centerX - this.activityInterval;
                     }
@@ -1479,12 +1504,13 @@ ezGame.register("scene", function (eg) {
                         this.onEnd();
                     }
                 }
+                
             }
         },
 
         // 绘制场景
         draw: function () {
-            eg.context.drawImage(this.image, this.x, this.y, this.width, this.height, 0, 0, this.width, this.height);
+            eg.context.drawImage(this.image, this.x < 0 ? 0 : this.x, this.y < 0 ? 0 : this.y, this.width, this.height, 0, 0, this.width, this.height);
         }
     };
     this.Scene = Scene;

@@ -6,6 +6,7 @@ window.onload = function () {
     var Sprite = ezGame.sprite.Sprite;
     var SpriteSheet = ezGame.spriteSheet.SpriteSheet;
     var Scene = ezGame.scene.Scene;
+    var collision = ezGame.collision;
 
     var floorY = 360;
 
@@ -13,7 +14,7 @@ window.onload = function () {
     var resources = {
         startSrc      : "images/gamestart.png",
         backgroundSrc : "images/background.png",
-        enemySrc      : "images/enemy.png",
+        mushroomSrc   : "images/enemy.png",
         playerSrc     : "images/player.png",
         stoneSrc      : "images/stone.png",
         stoneSrc2     : "images/stone2.png",
@@ -30,8 +31,8 @@ window.onload = function () {
         this.isJump = false;
         this.dir = 'right';
         this.moveDir = undefined;
-        this.addAnimation(new SpriteSheet('PlayerRight', 'playerSrc', {frameSize: [50, 60], frameTotal: 3, duration: 100}));
-        this.addAnimation(new SpriteSheet('PlayerLeft', 'playerSrc', {frameSize: [50, 60], frameTotal: 3, duration: 100, beginY: 60}));
+        this.addAnimation(new SpriteSheet('PlayerRight', 'playerSrc', {frameSize: [50, 60], frameTotal: 3, duration: 100, isLoop: true}));
+        this.addAnimation(new SpriteSheet('PlayerLeft', 'playerSrc', {frameSize: [50, 60], frameTotal: 3, duration: 100, isLoop: true, beginY: 60}));
     };
 
     Player.prototype.moveRight = function () {
@@ -83,11 +84,19 @@ window.onload = function () {
         } 
     };
 
-    Player.prototype.update = function () {
 
+    Player.prototype.die = function (){
+        this.isDie = true;
+        this.jump();
+        setTimeout(function () {
+            loop.end();
+        }, 1000);
+    }
+
+    Player.prototype.update = function () {
         // 跳跃结束
         var position = this.getRect();
-        if(this.speedY > 0 && (position.bottom + 10 >= floorY)) {
+        if(!this.isDie && this.speedY > 0 && (position.bottom + 10 >= floorY)) {
             this.isJump = false;
             this.setPosition({y:floorY - this.height});
             this.setMovement({aY: 0, speedY: 0});
@@ -118,6 +127,27 @@ window.onload = function () {
             this.stopMove();
         }
 
+        // 碰撞检测
+        var spriteList = game.spriteList;
+        for (var i = 0, len = game.spriteList.length; i < len; i++) {
+            if(spriteList[i] instanceof this.constructor) continue;
+            
+            if(spriteList[i] instanceof Mushroom 
+                && !spriteList[i].isDie 
+                && collision.detection(spriteList[i].getRect(), this.getRect())) {
+                if(this.speedY > 0) {
+                    spriteList[i].die();
+                } 
+                else {
+                    this.die();
+                }
+            }
+        }
+
+        if(game.scene.curPos.x < 5 && this.x < 5) {
+            this.x = 5;
+        }
+
         this.constructor.uber.update.call(this);
 
     };
@@ -126,15 +156,72 @@ window.onload = function () {
         this.constructor.uber.draw.call(this);
     };
 
+    // 蘑菇
+    var Mushroom = function (options) {
+        if(!(this instanceof arguments.callee)) {
+            return new arguments.callee(options);
+        }
+        this.init(options);     
+        this.addAnimation(new SpriteSheet('mushroom', 'mushroomSrc', {frameSize: [50, 48], frameTotal: 3}));
+        this.setCurrentAnimation("mushroom");
+        this.isDie = false;
+    }
+    ezGame.core.inherit(Mushroom, Sprite);
+
+    // 转向
+    Mushroom.prototype.turn = function () {
+        this.speedX *= -1; 
+    }
+
+    // 蘑菇死亡
+    Mushroom.prototype.die = function () {
+        game.scoreBoard.score += 1;
+        this.isDie = true;
+        this.spriteSheet.nextFrame();
+        this.setMovement({speedX: 0});
+        var that = this;
+        setTimeout(function () {
+            that.spriteSheet.nextFrame();
+            setTimeout(function () {
+                var index = game.spriteList.indexOf(that);
+                game.spriteList.splice(index, 1);
+            }, 20);
+        }, 20);
+    };
+
+    var ScoreBoard = function () {
+        if(!(this instanceof arguments.callee)) {
+            return new arguments.callee();
+        }
+        this.distance = 0;
+        this.score = 0;
+    };
+    ScoreBoard.prototype = {
+        update: function () {
+            this.distance = game.scene.curPos.x;
+        },
+        draw: function () {
+            var text = shape.Text(this.score, {x: 400 , y: 40, textAlign: 'center', font: '30px sans-serif', style: "green"});           
+            text.draw();
+        }
+    };
+
     // 图片加载成功handle
     var imageLoadSuccess = function () {
-        var mario = new Player({x: 400, y: floorY - 60, imgX: 50, imgY: 60, width: 50, height: 60, aX: 6});
+        var mario = new Player({x: 400, y: floorY - 60, imgX: 50, imgY: 60, width: 50, height: 60, aX: 6, maxSpeedX: 8});
         mario.initialize();
         game.spriteList.push(mario);
+
+        setInterval(function () {
+            var mushroom = new Mushroom({x: 2000, y: floorY - 45, imgX: 50, imgY: 48, width: 50, height: 48, speedX: -4});
+            game.spriteList.push(mushroom);
+        }, 1000);
 
         game.scene = new Scene(loader.loadedImgs['backgroundSrc'], {activityInterval: 50, isLoop: true});
         game.scene.setCenterPlayer(mario);
         game.scene.centerPlayer();
+
+        game.scoreBoard = new ScoreBoard();
 
         loop.start();
     };
@@ -165,7 +252,10 @@ window.onload = function () {
             game.scene.centerPlayer();
         }
         
-        this.scene.update();
+        this.scene.update(game.spriteList);
+        
+        this.scoreBoard.update();
+        
     }
 
     // 游戏画面更新
@@ -174,6 +264,8 @@ window.onload = function () {
         for(var len = this.spriteList.length, i = 0; i < len; i++) {
             this.spriteList[i].draw()
         }
+
+        this.scoreBoard.draw();
     }
     
     // 获得游戏循环对象
