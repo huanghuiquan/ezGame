@@ -1,7 +1,7 @@
 /**
  * @name ezGame
  * @author huanghuiquan
- * @description A easy Javascript 2D game framework base HTML5. 
+ * @description A easy Javascript 2D game framework base HTML5.
  */
 
 (function (window, undefined) {
@@ -67,7 +67,7 @@
  * 核心/工具模块
  */
 ezGame.register('core', function (eg) {
-    /** 
+    /**
      * @description ezGame的选择器，返回选中的元素的集合
      * @param {String} id 选择器
      * @param {HTMLNode} parent 父元素，默认为document
@@ -84,7 +84,7 @@ ezGame.register('core', function (eg) {
      * @param {Object} P 父对象
      * @return {undefined}
      */
-    this.inherit = function () { 
+    this.inherit = function () {
         var F = function () {};
         return function (C, P) {
             F.prototype = P.prototype;
@@ -156,7 +156,7 @@ ezGame.register('core', function (eg) {
 
     /**
      * @description 计算对象属性的数量， 注意：不包含继承属性
-     * @param obj Object 
+     * @param obj Object
      * @return int 除掉继承外的属性数量
      */
     this.count = function (obj) {
@@ -196,7 +196,7 @@ ezGame.register('core', function (eg) {
     }
 });
 
-/** 
+/**
  * @description 资源加载器
  */
 ezGame.register("loader", function (eg) {
@@ -280,7 +280,7 @@ ezGame.register("shape", function (eg) {
     /**
      * @description 矩形对象
      * @param {Object} options 默认为{x : 0, y : 0, width : 100, height ： 100, style : "red", isFill : true}
-     * @return {Rect} 
+     * @return {Rect}
      */
     var Rect = function (options) {
         // 如果以ezGame.rect(options) 形式调用则return new rect(options)，避免直接调用函数
@@ -308,8 +308,8 @@ ezGame.register("shape", function (eg) {
 
         /**
          * 设置参数
-         * @prama {Object} options 
-         * @returns {Rect} 
+         * @prama {Object} options
+         * @returns {Rect}
          */
         setOptions: function (options) {
             this.x = eg.core.isNum(options.x) ? options.x : this.x;
@@ -323,7 +323,7 @@ ezGame.register("shape", function (eg) {
 
         /**
          * 绘制矩形
-         * @returns {Rect} 
+         * @returns {Rect}
          */
         draw: function () {
             var context = eg.context;
@@ -341,7 +341,7 @@ ezGame.register("shape", function (eg) {
          * 将矩形移动一定距离
          * @param {Num} dx x轴上的增量
          * @param {Num} dy y轴上的增量
-         * @returns {Rect} 
+         * @returns {Rect}
          */
         move: function (dx, dy) {
             dx = dx || 0;
@@ -357,7 +357,7 @@ ezGame.register("shape", function (eg) {
          * 将矩形移动到特定位置
          * @param {Num} x x轴位置
          * @param {Num} y y轴位置
-         * @returns {Rect} 
+         * @returns {Rect}
          */
         moveTo: function (x, y) {
             x = eg.core.isNum(x) ? x : this.x;
@@ -372,7 +372,7 @@ ezGame.register("shape", function (eg) {
          * 将矩形放大或者缩小
          * @param {Num} w 宽度的增量
          * @param {Num} h 高度的增量
-         * @returns {Rect} 
+         * @returns {Rect}
          */
         resize: function (w, h) {
             w = w || 0;
@@ -387,7 +387,7 @@ ezGame.register("shape", function (eg) {
          * 将矩形改变到特定大小
          * @param {Num} width 宽度
          * @param {Num} height 高度
-         * @returns {Rect} 
+         * @returns {Rect}
          */
         resizeTo: function (width, height) {
             width = width || this.width;
@@ -401,9 +401,9 @@ ezGame.register("shape", function (eg) {
 
     /**
      * 圆形对象
-     * @param {Object} options 默认参数 
+     * @param {Object} options 默认参数
      *      { x : 100, y : 100, r : 100, startAngle : 0, endAngle : Math.PI * 2, antiClock : false, style : "red", isFill : true}
-     * @returns {Circle} 
+     * @returns {Circle}
      */
     var Circle = function (options) {
         if (!(this instanceof arguments.callee)) {
@@ -469,7 +469,7 @@ ezGame.register("shape", function (eg) {
          * 将圆形移动一定距离
          * @param {Num} dx x轴上的增量
          * @param {Num} dy y轴上的增量
-         * @returns {Circle} 
+         * @returns {Circle}
          */
         move: function (dx, dy) {
             dx = dx || 0;
@@ -483,7 +483,7 @@ ezGame.register("shape", function (eg) {
          * 将圆形移动到特定位置
          * @param {Num} x x轴位置
          * @param {Num} y y轴位置
-         * @returns {Circle} 
+         * @returns {Circle}
          */
         moveTo: function (x, y) {
             x = eg.core.isNum(x) ? x : this.x;
@@ -556,8 +556,8 @@ ezGame.register("shape", function (eg) {
 
         /**
          * 设置参数
-         * @param {Object} options 
-         * @return {Text} 
+         * @param {Object} options
+         * @return {Text}
          */
         setOptions: function (options) {
             this.x = options.x || this.x;
@@ -573,7 +573,7 @@ ezGame.register("shape", function (eg) {
 
         /**
          * 将文字渲染到canvas
-         * return {Text} 
+         * return {Text}
          */
         draw: function () {
             var context = eg.context;
@@ -730,7 +730,7 @@ ezGame.register("input", function (eg) {
     }
 
     /**
-     * 记录键盘松开的键,并运行注册在该事件上的函数 
+     * 记录键盘松开的键,并运行注册在该事件上的函数
      */
     var recordUp = function (eve) {
         var keyName = k[eve.keyCode];
@@ -987,7 +987,7 @@ ezGame.register("spriteSheet", function (eg) {
             this.frameSize = options.frameSize;
             this.frameTotal = options.frameTotal;
             this.currentIndex = options.currentIndex;
-            this.duration = options.duration; 
+            this.duration = options.duration;
             this.callback = options.callback;
 
             this.last = new Date().getTime();
@@ -1004,21 +1004,21 @@ ezGame.register("spriteSheet", function (eg) {
 
         draw: function () {
             eg.context.drawImage(
-                this.image, 
-                this.frameSize[0] * this.currentIndex + this.beginX, 
-                this.beginY, 
-                this.frameSize[0], 
-                this.frameSize[1], 
-                this.x, 
+                this.image,
+                this.frameSize[0] * this.currentIndex + this.beginX,
+                this.beginY,
+                this.frameSize[0],
+                this.frameSize[1],
+                this.x,
                 this.y,
-                this.frameSize[0], 
+                this.frameSize[0],
                 this.frameSize[1]
             );
         }
     };
-    
+
     this.SpriteSheet =  SpriteSheet;
-}); 
+});
 
 
 /**
@@ -1101,7 +1101,7 @@ ezGame.register("sprite", function (eg) {
 
         /**
          * 返回该sprite的position信息
-         * @return {Object} 
+         * @return {Object}
          */
         getPosition: function () {
             return {x: this.x, y: this.y};
@@ -1231,7 +1231,6 @@ ezGame.register("sprite", function (eg) {
                 var now = new Date().getTime();
                 var durationX = now - this.startTimeX;
                 var speedX = this.oriSpeedX + this.aX * durationX / 1000;
-                console.log(durationX);
                 if (this.maxSpeedX < 0) {
                     this.maxSpeedX *= -1;
                 }
@@ -1246,7 +1245,6 @@ ezGame.register("sprite", function (eg) {
                 var now = new Date().getTime();
                 var durationY = now - this.startTimeY;
                 var speedY = this.oriSpeedY + this.aY * durationY / 1000;
-                console.log(durationY);
                 if (this.maxSpeedY < 0) {
                     this.maxSpeedY *= -1;
                 }
@@ -1258,9 +1256,9 @@ ezGame.register("sprite", function (eg) {
             }
 
             this.move(this.speedX, this.speedY);
-            
+
             //更新spriteSheet动画
-            if (this.spriteSheet) { 
+            if (this.spriteSheet) {
                 this.spriteSheet.x = this.x;
                 this.spriteSheet.y = this.y;
                 this.spriteSheet.update();
@@ -1337,4 +1335,157 @@ ezGame.register("sprite", function (eg) {
         }
     }
     this.Sprite = Sprite;
+});
+
+/**
+ * 场景模块
+ */
+ezGame.register("scene", function (eg) {
+    /**
+     * @prama {Object|string} image 场景的背景图片
+     * @prama {Object} options 可选参数
+     * @param {number} options.width 显示窗口宽度
+     * @param {number} options.height 显示窗口高度
+     * @param {number} options.imgWidth 背景图片宽度
+     * @param {number} options.imgHeight 背景图片高度
+     * @param {number} options.x 背景图片可见的x坐标
+     * @param {number} options.y 背景图片可见的y坐标
+     * @param {number} options.centerX 被控制精灵可活动区间的中间位置
+     * @param {number} options.activityInterval 被控制精灵可活动区间宽度的1/2
+     * @param {boolean} options.isLoop 背景图片是否循环
+     * @param {Function} options.onEnd 背景图片是不循环时滚动到终点的回调函数
+     * return {Object} Scene的实例
+     */
+    var Scene = function (image, options) {
+        if(!(this instanceof arguments.callee)) {
+            return new arguments.callee(image, options);
+        }
+        this.init(image, options);
+    };
+
+    Scene.prototype = {
+        /**
+         * 初始化函数
+         * @prama {Object|string} image 场景的背景图片
+         * @prama {Object} options 可选参数
+         * @param {number} options.width 显示窗口宽度
+         * @param {number} options.height 显示窗口高度
+         * @param {number} options.imgWidth 背景图片宽度
+         * @param {number} options.imgHeight 背景图片高度
+         * @param {number} options.x 背景图片可见的x坐标
+         * @param {number} options.y 背景图片可见的y坐标
+         * @param {number} options.centerX 被控制精灵可活动区间的中间位置
+         * @param {number} options.activityInterval 被控制精灵可活动区间宽度的1/2
+         * @param {boolean} options.isLoop 背景图片是否循环
+         * @param {Function} options.onEnd 背景图片是不循环时滚动到终点的回调函数
+         */
+        init: function (image, options) {
+
+            this.image = eg.core.isObject(image) ? image : eg.loader.loadedImgs[image];
+
+            var defaultOptions = {
+                width: eg.width,
+                height: eg.height,
+                imgWidth: image.width,
+                imgHeight: image.height,
+                x: 0,
+                y: 0,
+                centerX: eg.width / 2,
+                activityInterval: 0,
+                isLoop: false
+            };
+
+            options = options || {};
+            options = eg.core.extend(defaultOptions, options);
+
+            this.width = options.width;
+            this.height = options.height;
+            this.imgWidth = options.imgWidth;
+            this.imgHeight = options.imgHeight;
+            this.x = options.x;
+            this.y = options.y;
+            this.centerX = options.centerX;
+            this.activityInterval = options.activityInterval;
+            this.isLoop = options.isLoop;
+            this.isCenterPlayer = options.isCenterPlayer;
+            this.onEnd = options.onEnd; // 到达滚动的右边时，回调函数
+
+            // 场景相对最初始时的位置
+            this.curPos = {x: this.x, y: this.y};
+        },
+
+        /**
+         * 设置被控制的精灵对象
+         */
+        setCenterPlayer: function (sprite) {
+            this.player = sprite;
+        },
+
+        /**
+         * 设置滚动开始
+         */
+        centerPlayer: function () {
+            this.isCenterPlayer = true;
+        },
+
+        /**
+         * 清除滚动模式
+         */
+        clearCenterPlayer: function () {
+            this.isCenterPlayer = false;
+        },
+
+        /**
+         * 逻辑更新，调整场景参数及各个其他物体的位置
+         */
+        update: function () {
+            if(this.isCenterPlayer) {
+                // 背景循环
+                if(this.isLoop) {
+                    if(this.player.x > this.centerX + this.activityInterval) {
+                        var offsetX = this.player.x - this.centerX - this.activityInterval;
+                        if(this.imgWidth < this.x + this.width) {
+                            this.x = 0;
+                        }
+                        this.x += offsetX;
+                        this.curPos.x += offsetX;
+                        this.player.x = this.centerX + this.activityInterval;
+                    }
+                    if(this.player.x < this.centerX - this.activityInterval) {
+                        var offsetX =  this.centerX - this.activityInterval - this.player.x;
+                        if(this.x < 0) {
+                            this.x = this.imgWidth - this.width;
+                        }
+                        this.x -= offsetX;
+                        this.curPos.x -= offsetX;
+                        this.player.x = this.centerX - this.activityInterval;
+                    }
+                }
+                // 背景不循环
+                else {
+                    if(this.player.x > this.centerX + this.activityInterval) {
+                        var offsetX = this.player.x - this.centerX - this.activityInterval;
+                        this.x += offsetX;
+                        this.curPos.x += offsetX;
+                        this.player.x = this.centerX + this.activityInterval;
+                    }
+                    if(this.player.x < this.centerX - this.activityInterval) {
+                        var offsetX =  this.centerX - this.activityInterval - this.player.x;
+                        this.x -= offsetX;
+                        this.curPos.x -= offsetX;
+                        this.player.x = this.centerX - this.activityInterval;
+                    }
+                    if(this.x + this.width >= this.imgWidth && this.onEnd) {
+                        this.onEnd();
+                    }
+                }
+            }
+        },
+
+        // 绘制场景
+        draw: function () {
+            eg.context.drawImage(this.image, this.x, this.y, this.width, this.height, 0, 0, this.width, this.height);
+        }
+    };
+    this.Scene = Scene;
 });

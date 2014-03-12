@@ -5,6 +5,7 @@ window.onload = function () {
     var shape = ezGame.shape;
     var Sprite = ezGame.sprite.Sprite;
     var SpriteSheet = ezGame.spriteSheet.SpriteSheet;
+    var Scene = ezGame.scene.Scene;
 
     var floorY = 360;
 
@@ -131,6 +132,10 @@ window.onload = function () {
         mario.initialize();
         game.spriteList.push(mario);
 
+        game.scene = new Scene(loader.loadedImgs['backgroundSrc'], {activityInterval: 50, isLoop: true});
+        game.scene.setCenterPlayer(mario);
+        game.scene.centerPlayer();
+
         loop.start();
     };
 
@@ -151,11 +156,21 @@ window.onload = function () {
         for(var len = this.spriteList.length, i = 0; i < len; i++) {
             this.spriteList[i].update()
         }
+
+        if(game.scene.curPos.x < 0) {
+            game.scene.clearCenterPlayer();
+        } 
+
+        if(game.scene.player.x > game.scene.centerX) {
+            game.scene.centerPlayer();
+        }
+        
+        this.scene.update();
     }
 
     // 游戏画面更新
     game.draw = function () {
-        ezGame.context.drawImage(ezGame.loader.loadedImgs.backgroundSrc, 0, 0);
+        this.scene.draw();
         for(var len = this.spriteList.length, i = 0; i < len; i++) {
             this.spriteList[i].draw()
         }
