@@ -862,7 +862,10 @@ ezGame.register("collision", function (eg) {
 
         // 矩形和矩形的碰撞 限制：只能是两个矩形都是平行的
         if (shape.isRect(objectA) && shape.isRect(objectB)) {
-            return ((objectA.right >= objectB.x && objectA.right <= objectB.right || objectA.x >= objectB.x && objectA.x < objectB.right) && (objectA.bottom > objectB.y && objectA.bottom < objectB.bottom || objectA.y < objectB.bottom && objectA.bottom > objectB.y));
+            return ((objectA.right > objectB.x && objectA.right < objectB.right || objectA.x > objectB.x && objectA.x < objectB.right) 
+                && (objectA.bottom > objectB.y && objectA.bottom < objectB.bottom || objectA.y < objectB.bottom && objectA.y > objectB.y) 
+                || (objectB.right > objectA.x && objectB.right < objectA.right || objectB.x > objectA.x && objectB.x < objectA.right) 
+                && (objectB.bottom > objectA.y && objectB.bottom < objectA.bottom || objectB.y < objectA.bottom && objectB.y > objectA.y) );
         }
 
         // 圆和圆的碰撞
@@ -1012,6 +1015,7 @@ ezGame.register("spriteSheet", function (eg) {
         },
 
         draw: function () {
+            try {
             eg.context.drawImage(
                 this.image,
                 this.frameSize[0] * this.currentIndex + this.beginX,
@@ -1023,6 +1027,9 @@ ezGame.register("spriteSheet", function (eg) {
                 this.frameSize[0],
                 this.frameSize[1]
             );
+            } catch (e) {
+            
+            }
         }
     };
 
@@ -1510,7 +1517,11 @@ ezGame.register("scene", function (eg) {
 
         // 绘制场景
         draw: function () {
-            eg.context.drawImage(this.image, this.x < 0 ? 0 : this.x, this.y < 0 ? 0 : this.y, this.width, this.height, 0, 0, this.width, this.height);
+            try {
+                eg.context.drawImage(this.image, this.x < 0 ? 0 : this.x, this.y < 0 ? 0 : this.y, this.width, this.height, 0, 0, this.width, this.height);
+            } catch (e) {
+            
+            }
         }
     };
     this.Scene = Scene;

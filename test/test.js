@@ -30,6 +30,7 @@ window.onload = function () {
     Player.prototype.initialize = function () {
         this.isJump = false;
         this.dir = 'right';
+        this.isOnFloor = true;
         this.moveDir = undefined;
         this.addAnimation(new SpriteSheet('PlayerRight', 'playerSrc', {frameSize: [50, 60], frameTotal: 3, duration: 100, isLoop: true}));
         this.addAnimation(new SpriteSheet('PlayerLeft', 'playerSrc', {frameSize: [50, 60], frameTotal: 3, duration: 100, isLoop: true, beginY: 60}));
@@ -100,12 +101,10 @@ window.onload = function () {
             this.isJump = false;
             this.setPosition({y:floorY - this.height});
             this.setMovement({aY: 0, speedY: 0});
-            if(this.speedX < 0) {
-                this.setMovement({aX: -10, maxSpeedX: 8});
+            if(this.speedX < 0 && this.aX < 0) {
                 this.setCurrentAnimation("PlayerLeft");
             }
-            else if(this.speedX > 0) {
-                this.setMovement({aX: 10, maxSpeedX: 8});
+            else if(this.speedX > 0 && this.aX > 0) {
                 this.setCurrentAnimation("PlayerRight");
             }
         }
@@ -130,16 +129,53 @@ window.onload = function () {
         // 碰撞检测
         var spriteList = game.spriteList;
         for (var i = 0, len = game.spriteList.length; i < len; i++) {
-            if(spriteList[i] instanceof this.constructor) continue;
+
+            var sprite = spriteList[i]; 
+
+            // 因为碰撞检测的计算量是很大的，所以排除掉距离远的物体减少碰撞检测次数,提高性能
+            if((this.x-sprite.x) * (this.x-sprite.x) + (this.y - sprite.y) * (this.y - sprite.y) > 20000) continue;
             
-            if(spriteList[i] instanceof Mushroom 
-                && !spriteList[i].isDie 
-                && collision.detection(spriteList[i].getRect(), this.getRect())) {
+            // 和蘑菇碰撞
+            if(sprite instanceof Mushroom 
+                && !sprite.isDie 
+                && collision.detection(sprite.getRect(), this.getRect())) {
                 if(this.speedY > 0) {
-                    spriteList[i].die();
+                    //this.setMovement({speedY: this.speedY * -.8});
+                    sprite.die();
                 } 
                 else {
                     this.die();
+                }
+            } 
+            // 和柱子碰撞
+            else if (sprite instanceof Pillar
+                && collision.detection(sprite.getRect(), this.getRect())) {
+                console.log("撞珠子");
+                if(this.speedY > 0) {
+                    this.isJump = false;
+                    this.dir = this.moveDir;
+                    this.moveDir = undefined;
+                    this.isOnFloor = false;
+                    this.setMovement({aY:0, speedY: 0});
+                    this.y = sprite.y - this.height;
+                } 
+                else {
+                    if(this.speedX < 0) {
+                        this.x = sprite.x + sprite.width;
+                    }
+                    else if(this.speedX > 0) {
+                        this.x = sprite.x - this.width;
+                    }
+                    this.setMovement({aX: 0, speedX: 0});
+                }
+            }
+
+            // 从柱子上下来
+            if (!this.isOnFloor && sprite instanceof Pillar) {
+                if (this.x + this.width < sprite.x || this.x > sprite.x + sprite.width) {
+                    this.setMovement({aY: 50, speedY: 0});
+                    this.isJump = true;
+                    this.isOnFloor = true;
                 }
             }
         }
@@ -170,8 +206,27 @@ window.onload = function () {
 
     // 转向
     Mushroom.prototype.turn = function () {
-        this.speedX *= -1; 
-    }
+        this.setMovement({speedX: this.speedX * -1});
+    };
+
+    Mushroom.prototype.update = function () {
+        if(this.x + game.scene.curPos.x < 0) this.turn();
+
+        var spriteList = game.spriteList;
+        for(var i = 0, len = spriteList.length; i < len; i++) {
+            var sprite = spriteList[i]; 
+
+            // 因为碰撞检测的计算量是很大的，所以排除掉距离远的物体减少碰撞检测次数,提高性能
+            if((this.x-sprite.x) * (this.x-sprite.x) + (this.y - sprite.y) * (this.y - sprite.y) > 20000) continue;
+
+            if(sprite instanceof Pillar
+                && collision.detection(sprite.getRect(), this.getRect())) {
+                this.turn();       
+            }
+        }
+
+        this.constructor.uber.update.call(this);
+    };
 
     // 蘑菇死亡
     Mushroom.prototype.die = function () {
@@ -187,7 +242,20 @@ window.onload = function () {
                 game.spriteList.splice(index, 1);
             }, 20);
         }, 20);
+
     };
+
+
+    // 柱子
+    var Pillar = function (options) {
+        if(!(this instanceof arguments.callee)) {
+            return new arguments.callee(options);
+        }
+        this.init(options);     
+        this.addAnimation(new SpriteSheet('pillar', 'pillarSrc', {frameSize: [90, 70], frameTotal: 1}));
+        this.setCurrentAnimation("pillar");
+    };
+    ezGame.core.inherit(Pillar, Sprite);
 
     var ScoreBoard = function () {
         if(!(this instanceof arguments.callee)) {
@@ -212,10 +280,20 @@ window.onload = function () {
         mario.initialize();
         game.spriteList.push(mario);
 
-        setInterval(function () {
-            var mushroom = new Mushroom({x: 2000, y: floorY - 45, imgX: 50, imgY: 48, width: 50, height: 48, speedX: -4});
+
+        var random = Math.random;
+        // 增加场景中的蘑菇
+        var mushroomPositions = [600, 1150, 1750, 2550, 3150, 4150];
+        for (var i in mushroomPositions) {
+            var mushroom = new Mushroom({x: mushroomPositions[i], y: floorY - 45, imgX: 50, imgY: 48, width: 50, height: 48, speedX: -4});
             game.spriteList.push(mushroom);
-        }, 1000);
+        }
+
+        //// 增加柱子到场景
+        var pillarPositions = [500, 1000, 1600, 2400, 3050, 4000];
+        for (var i in pillarPositions) {
+            game.spriteList.push(new Pillar({x: pillarPositions[i], y: floorY - 68, imgX: 90, imgY: 70, width: 90, height: 70}));
+        }
 
         game.scene = new Scene(loader.loadedImgs['backgroundSrc'], {activityInterval: 50, isLoop: true});
         game.scene.setCenterPlayer(mario);
