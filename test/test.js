@@ -25,7 +25,7 @@ window.onload = function () {
     var Player = function (options) {
         this.init(options);
     };
-    ezGame.core.inherit(Player, Sprite);
+    ezGame.utils.inherit(Player, Sprite);
 
     Player.prototype.initialize = function () {
         this.isJump = false;
@@ -37,7 +37,7 @@ window.onload = function () {
     };
 
     Player.prototype.moveRight = function () {
-        if(ezGame.core.isUndefined(this.moveDir) || this.moveDir !== 'right') {
+        if(ezGame.utils.isUndefined(this.moveDir) || this.moveDir !== 'right') {
             this.moveDir = 'right';
             this.setMovement({aX: 10, maxSpeedX: 8});
             this.setCurrentAnimation("PlayerRight");
@@ -45,7 +45,7 @@ window.onload = function () {
     };
     
     Player.prototype.moveLeft = function () {
-        if(ezGame.core.isUndefined(this.moveDir) || this.moveDir !== 'left') {
+        if(ezGame.utils.isUndefined(this.moveDir) || this.moveDir !== 'left') {
             this.moveDir = 'left';
             this.setMovement({aX: -10, maxSpeedX: 8});
             this.setCurrentAnimation("PlayerLeft");
@@ -202,7 +202,7 @@ window.onload = function () {
         this.setCurrentAnimation("mushroom");
         this.isDie = false;
     }
-    ezGame.core.inherit(Mushroom, Sprite);
+    ezGame.utils.inherit(Mushroom, Sprite);
 
     // 转向
     Mushroom.prototype.turn = function () {
@@ -230,7 +230,7 @@ window.onload = function () {
 
     // 蘑菇死亡
     Mushroom.prototype.die = function () {
-        game.scoreBoard.score += 1;
+        game.sutilsBoard.sutils += 1;
         this.isDie = true;
         this.spriteSheet.nextFrame();
         this.setMovement({speedX: 0});
@@ -255,21 +255,21 @@ window.onload = function () {
         this.addAnimation(new SpriteSheet('pillar', 'pillarSrc', {frameSize: [90, 70], frameTotal: 1}));
         this.setCurrentAnimation("pillar");
     };
-    ezGame.core.inherit(Pillar, Sprite);
+    ezGame.utils.inherit(Pillar, Sprite);
 
-    var ScoreBoard = function () {
+    var SutilsBoard = function () {
         if(!(this instanceof arguments.callee)) {
             return new arguments.callee();
         }
         this.distance = 0;
-        this.score = 0;
+        this.sutils = 0;
     };
-    ScoreBoard.prototype = {
+    SutilsBoard.prototype = {
         update: function () {
             this.distance = game.scene.curPos.x;
         },
         draw: function () {
-            var text = shape.Text(this.score, {x: 400 , y: 40, textAlign: 'center', font: '30px sans-serif', style: "green"});           
+            var text = shape.Text(this.sutils, {x: 400 , y: 40, textAlign: 'center', font: '30px sans-serif', style: "green"});           
             text.draw();
         }
     };
@@ -299,7 +299,7 @@ window.onload = function () {
         game.scene.setCenterPlayer(mario);
         game.scene.centerPlayer();
 
-        game.scoreBoard = new ScoreBoard();
+        game.sutilsBoard = new SutilsBoard();
 
         loop.start();
     };
@@ -332,7 +332,7 @@ window.onload = function () {
         
         this.scene.update(game.spriteList);
         
-        this.scoreBoard.update();
+        this.sutilsBoard.update();
         
     }
 
@@ -343,7 +343,7 @@ window.onload = function () {
             this.spriteList[i].draw()
         }
 
-        this.scoreBoard.draw();
+        this.sutilsBoard.draw();
     }
     
     // 获得游戏循环对象

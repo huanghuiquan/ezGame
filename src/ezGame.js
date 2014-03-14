@@ -18,7 +18,7 @@
             this.bgColor = options.bgColor || "#fff";
             this.bgImageSrc = options.bgImageSrc;
             this.fps = options.fps || 30;
-            this.title = this.core.$('title')[0];
+            this.title = this.utils.$('title')[0];
 
             this.spriteList = [];
 
@@ -27,8 +27,8 @@
             this.canvas.style.backgroundColor = this.bgColor;
             this.canvas.style.backgroundImage = this.bgImageSrc;
             var wrap = options.wrap || "body";
-            this.core.$(wrap)[0].appendChild(this.canvas); //将canvas 添加到网页中
-            this.canvas.position = this.core.getElementPos(this.canvas);
+            this.utils.$(wrap)[0].appendChild(this.canvas); //将canvas 添加到网页中
+            this.canvas.position = this.utils.getElementPos(this.canvas);
             this.canvas.x = this.x = this.canvas.position.x;
             this.canvas.y = this.y = this.canvas.position.y;
 
@@ -64,9 +64,9 @@
 })(window);
 
 /**
- * 核心/工具模块
+ * 工具模块
  */
-ezGame.register('core', function (eg) {
+ezGame.register('utils', function (eg) {
     /**
      * @description ezGame的选择器，返回选中的元素的集合
      * @param {String} id 选择器
@@ -209,7 +209,7 @@ ezGame.register("loader", function (eg) {
      * @param {number} timeout 预设最长加载时间，如果，超过时间则设置为加载失败
      */
     this.start = function (items, gameObj, callbackForSuccess, callbackForFail, timeout) {
-        this.total = eg.core.count(items);
+        this.total = eg.utils.count(items);
         this.loadedCount = 0; // 图片已加载数
         this.loadedPercent = 0; // 图片已加载数
         this.loadingImgs = {}; // 未加载图片集合
@@ -300,7 +300,7 @@ ezGame.register("shape", function (eg) {
                 isFill: true
             };
             options = options || {};
-            options = eg.core.extend(defaultOptions, options);
+            options = eg.utils.extend(defaultOptions, options);
             this.setOptions(options);
 
             _resetRightBottom(this);
@@ -312,12 +312,12 @@ ezGame.register("shape", function (eg) {
          * @returns {Rect}
          */
         setOptions: function (options) {
-            this.x = eg.core.isNum(options.x) ? options.x : this.x;
-            this.y = eg.core.isNum(options.y) ? options.y : this.y;
-            this.width = eg.core.isNum(options.width) ? options.width : this.width;
-            this.height = eg.core.isNum(options.height) ? options.height : this.height;
+            this.x = eg.utils.isNum(options.x) ? options.x : this.x;
+            this.y = eg.utils.isNum(options.y) ? options.y : this.y;
+            this.width = eg.utils.isNum(options.width) ? options.width : this.width;
+            this.height = eg.utils.isNum(options.height) ? options.height : this.height;
             this.style = options.style || this.style;
-            this.isFill = eg.core.isUndefined(options.isFill) ? this.isFill : options.isFill;
+            this.isFill = eg.utils.isUndefined(options.isFill) ? this.isFill : options.isFill;
             return this;
         },
 
@@ -360,8 +360,8 @@ ezGame.register("shape", function (eg) {
          * @returns {Rect}
          */
         moveTo: function (x, y) {
-            x = eg.core.isNum(x) ? x : this.x;
-            y = eg.core.isNum(y) ? y : this.y;
+            x = eg.utils.isNum(x) ? x : this.x;
+            y = eg.utils.isNum(y) ? y : this.y;
             this.x = x;
             this.y = y;
             _resetRightBottom(this);
@@ -425,7 +425,7 @@ ezGame.register("shape", function (eg) {
                 isFill: true
             };
             options = options || {};
-            options = eg.core.extend(defaultOptions, options);
+            options = eg.utils.extend(defaultOptions, options);
             this.setOptions(options);
         },
 
@@ -435,14 +435,14 @@ ezGame.register("shape", function (eg) {
          * @returns {Circle}
          */
         setOptions: function (options) {
-            this.x = eg.core.isNum(options.x) ? options.x : this.x;
-            this.y = eg.core.isNum(options.y) ? options.y : this.y;
-            this.r = eg.core.isNum(options.r) ? options.r : this.r;
-            this.startAngle = eg.core.isNum(options.startAngle) ? options.startAngle : this.startAngle;
-            this.endAngle = eg.core.isNum(options.endAngle) ? options.endAngle : this.endAngle;
-            this.antiClock = eg.core.isUndefined(options.antiClock) ? this.antiClock : options.antiClock;
+            this.x = eg.utils.isNum(options.x) ? options.x : this.x;
+            this.y = eg.utils.isNum(options.y) ? options.y : this.y;
+            this.r = eg.utils.isNum(options.r) ? options.r : this.r;
+            this.startAngle = eg.utils.isNum(options.startAngle) ? options.startAngle : this.startAngle;
+            this.endAngle = eg.utils.isNum(options.endAngle) ? options.endAngle : this.endAngle;
+            this.antiClock = eg.utils.isUndefined(options.antiClock) ? this.antiClock : options.antiClock;
             this.style = options.style || this.style;
-            this.isFill = eg.core.isUndefined(options.isFill) ? this.isFill : options.isFill;
+            this.isFill = eg.utils.isUndefined(options.isFill) ? this.isFill : options.isFill;
             return this;
         },
 
@@ -486,8 +486,8 @@ ezGame.register("shape", function (eg) {
          * @returns {Circle}
          */
         moveTo: function (x, y) {
-            x = eg.core.isNum(x) ? x : this.x;
-            y = eg.core.isNum(y) ? y : this.y;
+            x = eg.utils.isNum(x) ? x : this.x;
+            y = eg.utils.isNum(y) ? y : this.y;
             this.x = x;
             this.y = y;
             return this;
@@ -510,7 +510,7 @@ ezGame.register("shape", function (eg) {
          * @return {Circle}
          */
         resizeTo: function (r) {
-            r = eg.core.isNum(r) ? r : this.r;
+            r = eg.utils.isNum(r) ? r : this.r;
             this.r = r;
             return this;
         }
@@ -549,7 +549,7 @@ ezGame.register("shape", function (eg) {
             };
 
             options = options || {};
-            options = eg.core.extend(defaultOptions, options);
+            options = eg.utils.extend(defaultOptions, options);
             this.setOptions(options);
             this.text = text;
         },
@@ -577,10 +577,10 @@ ezGame.register("shape", function (eg) {
          */
         draw: function () {
             var context = eg.context;
-            (!eg.core.isUndefined(this.font)) && (context.font = this.font);
-            (!eg.core.isUndefined(this.textBaseline)) && (context.textBaseline = this.textBaseline);
-            (!eg.core.isUndefined(this.textAlign)) && (context.textAlign = this.textAlign);
-            (!eg.core.isUndefined(this.maxWidth)) && (context.maxWidth = this.maxWidth);
+            (!eg.utils.isUndefined(this.font)) && (context.font = this.font);
+            (!eg.utils.isUndefined(this.textBaseline)) && (context.textBaseline = this.textBaseline);
+            (!eg.utils.isUndefined(this.textAlign)) && (context.textAlign = this.textAlign);
+            (!eg.utils.isUndefined(this.maxWidth)) && (context.maxWidth = this.maxWidth);
             if (this.isFill) {
                 context.fillStyle = this.style;
                 this.maxWidth ? context.fillText(this.text, this.x, this.y, this.maxWidth) : context.fillText(this.text, this.x, this.y);
@@ -764,7 +764,7 @@ ezGame.register("input", function (eg) {
      * @param {Array | String} keyName 要禁止默认行为的按键
      */
     this.preventDefault = function (keyName) {
-        if (eg.core.isArray(keyName)) {
+        if (eg.utils.isArray(keyName)) {
             for (var i = 0, len = keyName.length; i < len; i++) {
                 arguments.callee.call(this, keyName[i]);
             }
@@ -780,7 +780,7 @@ ezGame.register("input", function (eg) {
      */
     this.onKeyDown = function (keyName, handler) {
         keyName = keyName || "allKeys";
-        if (eg.core.isUndefined(keydown_callbacks[keyName])) {
+        if (eg.utils.isUndefined(keydown_callbacks[keyName])) {
             keydown_callbacks[keyName] = [];
         }
         keydown_callbacks[keyName].push(handler);
@@ -793,7 +793,7 @@ ezGame.register("input", function (eg) {
      */
     this.onKeyUp = function (keyName, handler) {
         keyName = keyName || "allKeys";
-        if (eg.core.isUndefined(keyup_callbacks[keyName])) {
+        if (eg.utils.isUndefined(keyup_callbacks[keyName])) {
             keyup_callbacks[keyName] = [];
         }
         keyup_callbacks[keyName].push(handler);
@@ -862,10 +862,11 @@ ezGame.register("collision", function (eg) {
 
         // 矩形和矩形的碰撞 限制：只能是两个矩形都是平行的
         if (shape.isRect(objectA) && shape.isRect(objectB)) {
-            return ((objectA.right > objectB.x && objectA.right < objectB.right || objectA.x > objectB.x && objectA.x < objectB.right) 
-                && (objectA.bottom > objectB.y && objectA.bottom < objectB.bottom || objectA.y < objectB.bottom && objectA.y > objectB.y) 
-                || (objectB.right > objectA.x && objectB.right < objectA.right || objectB.x > objectA.x && objectB.x < objectA.right) 
-                && (objectB.bottom > objectA.y && objectB.bottom < objectA.bottom || objectB.y < objectA.bottom && objectB.y > objectA.y) );
+            //return ((objectA.right > objectB.x && objectA.right < objectB.right || objectA.x > objectB.x && objectA.x < objectB.right) 
+                //&& (objectA.bottom > objectB.y && objectA.bottom < objectB.bottom || objectA.y < objectB.bottom && objectA.y > objectB.y) 
+                //|| (objectB.right > objectA.x && objectB.right < objectA.right || objectB.x > objectA.x && objectB.x < objectA.right) 
+                //&& (objectB.bottom > objectA.y && objectB.bottom < objectA.bottom || objectB.y < objectA.bottom && objectB.y > objectA.y) );
+            return ((objectA.right > objectB.x && objectA.x < objectB.right) && (objectA.bottom > objectB.y && objectA.y < objectB.bottom));
         }
 
         // 圆和圆的碰撞
@@ -896,7 +897,7 @@ ezGame.register("loop", function (eg) {
                 }
 
                 if (_this.gameObj.draw) {
-                    eg.core.clearCanvas();
+                    eg.utils.clearCanvas();
                     _this.gameObj.draw();
                 }
             }
@@ -918,7 +919,7 @@ ezGame.register("loop", function (eg) {
             };
             options = options || {};
 
-            options = eg.core.extend(defaultOptions, options);
+            options = eg.utils.extend(defaultOptions, options);
             this.gameObj = gameObj;
             this.fps = options.fps;
             interval = 1000 / this.fps;
@@ -982,7 +983,7 @@ ezGame.register("spriteSheet", function (eg) {
                 callback: undefined
             };
 
-            options = eg.core.extend(defaultOptions, options);
+            options = eg.utils.extend(defaultOptions, options);
             this.id = id;
             this.image = image;
             this.x = options.x;
@@ -1074,7 +1075,7 @@ ezGame.register("sprite", function (eg) {
             };
 
             options = options || {};
-            options = eg.core.extend(defaultObj, options);
+            options = eg.utils.extend(defaultObj, options);
 
             this.x = options.x;
             this.y = options.y;
@@ -1148,10 +1149,10 @@ ezGame.register("sprite", function (eg) {
          */
         setCurrentAnimation: function (id) { //可传入id或spriteSheet
             if (!this.isCurrentAnimation(id)) {
-                if (eg.core.isString(id)) {
+                if (eg.utils.isString(id)) {
                     this.spriteSheet = this.spriteSheetList[id];
                     this.image = this.imgX = this.imgY = undefined;
-                } else if (eg.core.isObject(id)) {
+                } else if (eg.utils.isObject(id)) {
                     this.spriteSheet = id;
                     this.addAnimation(id);
                     this.image = this.imgX = this.imgY = undefined;
@@ -1164,9 +1165,9 @@ ezGame.register("sprite", function (eg) {
          * 判断当前动画是否为该id的动画
          */
         isCurrentAnimation: function (id) {
-            if (eg.core.isString(id)) {
+            if (eg.utils.isString(id)) {
                 return (this.spriteSheet && this.spriteSheet.id === id);
-            } else if (eg.core.isObject(id)) {
+            } else if (eg.utils.isObject(id)) {
                 return this.spriteSheet === id;
             }
         },
@@ -1200,7 +1201,7 @@ ezGame.register("sprite", function (eg) {
          * 设置移动参数
          */
         setMovement: function (options) {
-            isUndefined = eg.core.isUndefined;
+            isUndefined = eg.utils.isUndefined;
             isUndefined(options.speedX) ? this.speedX = this.speedX : this.speedX = options.speedX;
             isUndefined(options.speedY) ? this.speedY = this.speedY : this.speedY = options.speedY;
 
@@ -1396,7 +1397,7 @@ ezGame.register("scene", function (eg) {
          */
         init: function (image, options) {
 
-            this.image = eg.core.isObject(image) ? image : eg.loader.loadedImgs[image];
+            this.image = eg.utils.isObject(image) ? image : eg.loader.loadedImgs[image];
 
             var defaultOptions = {
                 width: eg.width,
@@ -1411,7 +1412,7 @@ ezGame.register("scene", function (eg) {
             };
 
             options = options || {};
-            options = eg.core.extend(defaultOptions, options);
+            options = eg.utils.extend(defaultOptions, options);
 
             this.width = options.width;
             this.height = options.height;
