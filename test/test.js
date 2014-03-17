@@ -130,13 +130,13 @@ window.onload = function() {
             }
         }
 
-        if (input.isPressed('up')) {
+        if (!this.isDie && input.isPressed('up')) {
             if (!this.isJump) {
                 this.jump();
             }
-        } else if (input.isPressed('right') && !this.isJump) {
+        } else if (!this.isDie && input.isPressed('right') && !this.isJump) {
             this.moveRight();
-        } else if (input.isPressed('left') && !this.isJump) {
+        } else if (!this.isDie && input.isPressed('left') && !this.isJump) {
             this.moveLeft();
         } else {
             this.stopMove();
@@ -162,7 +162,6 @@ window.onload = function() {
             }
             // 和柱子碰撞
             else if (sprite instanceof Pillar && collision.detection(sprite.getRect(), this.getRect())) {
-                console.log("撞珠子");
                 if (this.speedY > 0) {
                     this.isJump = false;
                     this.dir = this.moveDir;

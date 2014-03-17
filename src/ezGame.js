@@ -3,18 +3,23 @@
  * @author huanghuiquan
  * @name ezGame
  */
+
 (function(window, undefined) {
     var document = window.document;
     /**
-     * ezGame的主类
+     * ezGame的主类, 可通过其ezGame.register方法扩展
      * @class ezGame
      */
     var ezGame = {
         /**
          * ezGame实例的初始化
          * @method init
+         * @for ezGame
          * @param {Object} options ezGame实例的初始化参数
-         * @param {}
+         * @param {Number} options.width 游戏窗口宽度
+         * @param {Number} options.height 游戏窗口高度
+         * @param {String} options.bgColor 游戏窗口背景颜色
+         * @param {Number} options.fps 游戏界面的每秒刷新帧数
          * @return {Object} 返回新构建的ezGame实例
          */
         init: function(options) {
@@ -22,28 +27,25 @@
                 width: 400,
                 height: 400,
                 bgColor: "#fff",
-                bgImageSrc: "",
-                fps: 30,
-                title: this.utils.$('title')[0],
+                fps: 60,
             };
             options = this.utils.extend(defaultOptions, options);
 
             this.canvas = document.createElement("canvas");
             this.context = this.canvas.getContext('2d');
-
+            this.width = options.width;
+            this.height = options.height;
             this.canvas.width = options.width;
             this.canvas.height = options.height;
             this.bgColor = options.bgColor;
-            this.bgImageSrc = options.bgImageSrc;
             this.fps = options.fps;
-            this.title = options.title;
 
+            // 游戏中的精灵数组 
             this.spriteList = [];
 
             this.canvas.style.width = this.width;
             this.canvas.style.height = this.height;
             this.canvas.style.backgroundColor = this.bgColor;
-            this.canvas.style.backgroundImage = this.bgImageSrc;
             var wrap = options.wrap || "body";
             this.utils.$(wrap)[0].appendChild(this.canvas); //将canvas 添加到网页中
             this.canvas.position = this.utils.getElementPos(this.canvas);
@@ -62,6 +64,7 @@
          *
          *      // 然后可以通过`ezGame.event`来使用该模块的类
          * @method register
+         * @for ezGame
          * @param {String} namespace 模块名
          * @param {Function(ezGame)} func 回调函数，在里面写下模块的具体内容,回调函数包含一个ezGame实例参数
          * @return {undefined} 返回空值
@@ -80,9 +83,7 @@
         }
 
     };
-
     window["ezGame"] = ezGame;
-
 })(window);
 
 /**
@@ -91,7 +92,10 @@
  */
 ezGame.register('utils', function(eg) {
     /**
-     * @description ezGame的选择器，返回选中的元素的集合
+     * ezGame的选择器，返回选中的元素的集合
+     * @method $
+     * @static
+     * @for utils
      * @param {String} id 选择器
      * @param {HTMLNode} parent 父元素，默认为document
      * @return {Array} 选中元素的集合
@@ -103,11 +107,14 @@ ezGame.register('utils', function(eg) {
 
     /**
      * 类继承辅助函数, 不继承父对象的实例属性,只继承父对象的原型
+     * @method inherit
+     * @static
+     * @for utils
      * @param {Object} C 子对象
      * @param {Object} P 父对象
      * @return {undefined}
      */
-    this.inherit = function() {
+    this.inherit = function(C, P) {
         var F = function() {};
         return function(C, P) {
             F.prototype = P.prototype;
@@ -118,52 +125,86 @@ ezGame.register('utils', function(eg) {
     }();
 
     /**
-     * 是否为undefined
+     * 判断参数是否为undefined
+     * @method isUndefined
+     * @static
+     * @for utils
+     * @param {Object} elem 目标变量
+     * @return {Boolean} 如果为undefined返回true
      */
     this.isUndefined = function(elem) {
         return typeof elem === 'undefined';
     };
 
     /**
-     * @destination 是否为数组
+     * 判断参数是否为数组
+     * @method isArray
+     * @static
+     * @for utils
+     * @param {Object} elem 目标变量
+     * @return {Boolean} 如果为数组返回true,否则返回false
      */
     this.isArray = function(elem) {
         return Object.prototype.toString.call(elem) === "[object Array]";
     };
 
     /**
-     * @destination 是否为Object类型
+     * 判断参数是否为Object类型(除了Number,String,Boolean,undefined,null基本类型外的其他类型)
+     * @method isObject
+     * @static
+     * @for utils
+     * @param {Object} elem 目标变量
+     * @return {Boolean} 如果变量为对象返回true,否则返回false
      */
     this.isObject = function(elem) {
         return elem === Object(elem);
     };
 
     /**
-     * @destination 是否为字符串类型
+     * 判断参数是否为字符串类型
+     * @method isString
+     * @static
+     * @for utils
+     * @param {Object} elem 目标变量
+     * @return {Boolean} 如果变量为字符串返回true,否则返回false
      */
     this.isString = function(elem) {
         return Object.prototype.toString.call(elem) === "[object String]";
     };
 
     /**
-     * @destination 是否为数值类型
+     * 判断参数是否为数值类型
+     * @method isNumber
+     * @static
+     * @for utils
+     * @param {Object} elem 目标变量
+     * @return {Boolean} 如果变量为数字返回true,否则返回false
      */
-    this.isNum = function(elem) {
+    this.isNumber = function(elem) {
         return Object.prototype.toString.call(elem) === "[object Number]";
     };
 
     /**
-     * @destination 是否为function
+     * 判断参数是否为function类型
+     * @method isFunction
+     * @static
+     * @for utils
+     * @param {Object} elem 目标变量
+     * @return {Boolean} 如果变量为函数返回true,否则返回false
      */
     this.isFunction = function(elem) {
         return Object.prototype.toString.call(elem) === "[object Function]";
     };
 
     /**
-     * @destination 复制对象属性
-     * @param {Object} 被扩展的对象
-     * @param {Object} 扩展来源
-     * @prama {boolean} 是否覆盖原有属性,默认true
+     * 复制对象属性
+     * @method extend
+     * @static
+     * @for utils
+     * @param {Object} destination 被扩展的对象
+     * @param {Object} source 扩展来源
+     * @prama {Boolean} isCover 是否覆盖原有属性,默认true
+     * return {Object} 返回已被扩展的目标对象
      */
     this.extend = function(destination, source, isCover) {
         var isUndefined = this.isUndefined;
@@ -172,15 +213,17 @@ ezGame.register('utils', function(eg) {
             if (isCover || isUndefined(destination[name])) {
                 destination[name] = source[name];
             }
-
         }
         return destination;
     };
 
     /**
-     * @description 计算对象属性的数量， 注意：不包含继承属性
-     * @param obj Object
-     * @return int 除掉继承外的属性数量
+     * 计算对象属性的数量， 注意：不包含继承属性
+     * @method count
+     * @static
+     * @for utils
+     * @param {Object} obj  目标对象
+     * @return {Number} 除掉继承外的属性数量
      */
     this.count = function(obj) {
         var counter = 0;
@@ -193,14 +236,22 @@ ezGame.register('utils', function(eg) {
     }
 
     /**
-     * 清除canvas
+     * 清除当前窗口的所有颜色
+     * @method clearCanvas
+     * @static
+     * @for utils
+     * @return {Object} 返回该窗口的引用this
      */
     this.clearCanvas = function() {
         eg.context.clearRect(0, 0, eg.width, eg.height);
+        return this;
     }
 
     /**
      * 获取元素在页面中的位置
+     * @method getElementPos
+     * @static
+     * @for utils
      * @param {HTMLElement} element DOM元素
      * @return {Object} left和top的值
      */
@@ -220,24 +271,66 @@ ezGame.register('utils', function(eg) {
 });
 
 /**
- * @description 资源加载器
+ * 资源加载器
+ * @module loader
  */
 ezGame.register("loader", function(eg) {
+
+    /** 
+     * 图片总数
+     * @attribue total
+     * @type Number
+     */
+    this.total = 0;
+
+    /** 
+     * 图片已加载数
+     * @attribue loadedCount
+     * @type Number
+     */
+    this.loadedCount = 0;
+
+    /** 
+     * 图片已加载百分比
+     * @attribue loadedPercent
+     * @type Number
+     */
+    this.loadedPercent = 0;
+
+    /** 
+     * 正在加载中的图片
+     * @attribue loadingImgs
+     * @type Object
+     */
+    this.loadingImgs = {};
+
+    /** 
+     * 已加载完成的图片集合
+     * @attribue loadedImgs
+     * @type Object
+     */
+    this.loadedImgs = {};
+
+    /** 
+     * 加载失败的图片集
+     * @attribue loadFailImgs
+     * @type Object
+     */
+    this.loadFailImgs = {};
+
     /**
      * 开始加载资源
+     * @method start
+     * @static
+     * @for loader
      * @param {Object} items 资源列表
      * @param {Object} gameObj 游戏对象
      * @param {Function(gameObj, loader)} callbackforsuccess 加载成功是调用
-     * @param {Function(game)} callbackforfail 加载失败时调用
-     * @param {number} timeout 预设最长加载时间，如果，超过时间则设置为加载失败
+     * @param {Function(gameObj, loader)} callbackforfail 加载失败时调用
+     * @param {Number} timeout 预设最长加载时间,默认30s，如果，超过时间则设置为加载失败
      */
     this.start = function(items, gameObj, callbackForSuccess, callbackForFail, timeout) {
         this.total = eg.utils.count(items);
-        this.loadedCount = 0; // 图片已加载数
-        this.loadedPercent = 0; // 图片已加载数
-        this.loadingImgs = {}; // 未加载图片集合
-        this.loadedImgs = {}; // 已加载图片集合
-        this.loadFailImgs = {}; // 加载失败的图片集
         for (var item in items) {
             this.loadingImgs[item] = new Image();
             this.loadingImgs[item].src = items[item];
@@ -274,25 +367,26 @@ ezGame.register("loader", function(eg) {
 
     /**
      * 通过图片名获取图片对象
-     * param {string|Image} name 图片名
-     * return {Image|undefined} 返回name对应的图像对象
+     * @method getImage
+     * @static
+     * @for loader
+     * @param {String|Image} name 图片名
+     * @return {Image|undefined} 返回name对应的图像对象
      */
     this.getImage = function(name) {
         return name.toString() === '[object HTMLImageElement]' ? name : this.loadedImgs[name];
     };
-
 });
 
 
 /**
- * 图形模块
- * 包含点、矩形、圆、文本对象
+ * 图形模块,包含点、矩形、圆、文本对象
+ * @module shape
  */
 ezGame.register("shape", function(eg) {
 
     /**
-     * @destination 更新right和bottom
-     * @private
+     * 更新right和bottom的值
      * @prama {Shape} elem 图形对象
      */
     var _resetRightBottom = function(elem) {
@@ -301,9 +395,17 @@ ezGame.register("shape", function(eg) {
     }
 
     /**
-     * @description 矩形对象
-     * @param {Object} options 默认为{x : 0, y : 0, width : 100, height ： 100, style : "red", isFill : true}
-     * @return {Rect}
+     * 矩形对象
+     * @class Rect
+     * @constructor
+     * @param {Object} options 初始化参数
+     * @param {Number} options.x 矩形在画布上的x坐标，默认`0`
+     * @param {Number} options.y 矩形在画布上的y坐标, 默认`0`
+     * @param {Number} options.width 矩形宽度, 默认`100`
+     * @param {Number} options.height 矩形高度, 默认`100`
+     * @param {String} options.style 矩形的颜色, 默认`red`
+     * @param {Boolean} options.isFill 是否填充矩形, 默认`true`
+     * @return {Rect} 返回矩形对象实例
      */
     var Rect = function(options) {
         // 如果以ezGame.rect(options) 形式调用则return new rect(options)，避免直接调用函数
@@ -313,6 +415,19 @@ ezGame.register("shape", function(eg) {
         this.init(options);
     };
     Rect.prototype = {
+        /**
+         * 矩形对象的初始化函数
+         * @method init
+         * @for Rect
+         * @param {Object} options 初始化参数
+         * @param {Number} options.x 矩形在画布上的x坐标，默认`0`
+         * @param {Number} options.y 矩形在画布上的y坐标, 默认`0`
+         * @param {Number} options.width 矩形宽度, 默认`100`
+         * @param {Number} options.height 矩形高度, 默认`100`
+         * @param {String} options.style 矩形的颜色, 默认`red`
+         * @param {Boolean} options.isFill 是否填充矩形, 默认`true`
+         * @return {Rect} 返回矩形对象实例
+         */
         init: function(options) {
             var defaultOptions = {
                 x: 0,
@@ -331,14 +446,22 @@ ezGame.register("shape", function(eg) {
 
         /**
          * 设置参数
-         * @prama {Object} options
-         * @returns {Rect}
+         * @method setOptions
+         * @for Rect
+         * @param {Object} options 初始化参数
+         * @param {Number} options.x 矩形在画布上的x坐标，默认`0`
+         * @param {Number} options.y 矩形在画布上的y坐标, 默认`0`
+         * @param {Number} options.width 矩形宽度, 默认`100`
+         * @param {Number} options.height 矩形高度, 默认`100`
+         * @param {String} options.style 矩形的颜色, 默认`red`
+         * @param {Boolean} options.isFill 是否填充矩形, 默认`true`
+         * @returns {Rect} 返回矩形对象this的引用
          */
         setOptions: function(options) {
-            this.x = eg.utils.isNum(options.x) ? options.x : this.x;
-            this.y = eg.utils.isNum(options.y) ? options.y : this.y;
-            this.width = eg.utils.isNum(options.width) ? options.width : this.width;
-            this.height = eg.utils.isNum(options.height) ? options.height : this.height;
+            this.x = eg.utils.isNumber(options.x) ? options.x : this.x;
+            this.y = eg.utils.isNumber(options.y) ? options.y : this.y;
+            this.width = eg.utils.isNumber(options.width) ? options.width : this.width;
+            this.height = eg.utils.isNumber(options.height) ? options.height : this.height;
             this.style = options.style || this.style;
             this.isFill = eg.utils.isUndefined(options.isFill) ? this.isFill : options.isFill;
             return this;
@@ -346,7 +469,9 @@ ezGame.register("shape", function(eg) {
 
         /**
          * 绘制矩形
-         * @returns {Rect}
+         * @method draw
+         * @for Rect
+         * @returns {Rect} 返回矩形对象this的引用
          */
         draw: function() {
             var context = eg.context;
@@ -362,9 +487,11 @@ ezGame.register("shape", function(eg) {
 
         /**
          * 将矩形移动一定距离
-         * @param {Num} dx x轴上的增量
-         * @param {Num} dy y轴上的增量
-         * @returns {Rect}
+         * @method move
+         * @for Rect
+         * @param {Number} dx x轴上的增量
+         * @param {Number} dy y轴上的增量
+         * @returns {Rect} 返回矩形对象this的引用
          */
         move: function(dx, dy) {
             dx = dx || 0;
@@ -378,13 +505,15 @@ ezGame.register("shape", function(eg) {
 
         /**
          * 将矩形移动到特定位置
-         * @param {Num} x x轴位置
-         * @param {Num} y y轴位置
-         * @returns {Rect}
+         * @method moveTo
+         * @for Rect
+         * @param {Number} x x轴位置
+         * @param {Number} y y轴位置
+         * @returns {Rect} 返回矩形对象this的引用
          */
         moveTo: function(x, y) {
-            x = eg.utils.isNum(x) ? x : this.x;
-            y = eg.utils.isNum(y) ? y : this.y;
+            x = eg.utils.isNumber(x) ? x : this.x;
+            y = eg.utils.isNumber(y) ? y : this.y;
             this.x = x;
             this.y = y;
             _resetRightBottom(this);
@@ -393,9 +522,11 @@ ezGame.register("shape", function(eg) {
 
         /**
          * 将矩形放大或者缩小
-         * @param {Num} w 宽度的增量
-         * @param {Num} h 高度的增量
-         * @returns {Rect}
+         * @method resize
+         * @for Rect
+         * @param {Number} w 宽度的增量
+         * @param {Number} h 高度的增量
+         * @returns {Rect} 返回矩形对象this的引用
          */
         resize: function(w, h) {
             w = w || 0;
@@ -408,9 +539,11 @@ ezGame.register("shape", function(eg) {
 
         /**
          * 将矩形改变到特定大小
-         * @param {Num} width 宽度
-         * @param {Num} height 高度
-         * @returns {Rect}
+         * @method resizeTo
+         * @for Rect
+         * @param {Number} width 宽度
+         * @param {Number} height 高度
+         * @returns {Rect} 返回矩形对象this的引用
          */
         resizeTo: function(width, height) {
             width = width || this.width;
@@ -424,9 +557,18 @@ ezGame.register("shape", function(eg) {
 
     /**
      * 圆形对象
-     * @param {Object} options 默认参数
-     *      { x : 100, y : 100, r : 100, startAngle : 0, endAngle : Math.PI * 2, antiClock : false, style : "red", isFill : true}
-     * @returns {Circle}
+     * @class Circle
+     * @constructor
+     * @param {Object} options 初始化参数
+     * @param {Number} options.x 圆心的x坐标,默认`100`
+     * @param {Number} options.y 圆心的y坐标,默认`100`
+     * @param {Number} options.r 圆的半径, 默认`100`
+     * @param {Number} options.startAngle 开始画圆的开始角度, 默认`0`
+     * @param {Number} options.endAngle 圆的开始角度结束角度, 默认`2*PI`
+     * @param {Boolean} options.antiClock 逆时针画圆，默认`true`
+     * @param {String} options.style 圆的颜色, 默认`red`
+     * @param {Boolean} options.isFill 是否填充圆, 默认`true`
+     * @return {Circle} 返回实例Circle的引用
      */
     var Circle = function(options) {
         if (!(this instanceof arguments.callee)) {
@@ -435,6 +577,21 @@ ezGame.register("shape", function(eg) {
         this.init(options);
     }
     Circle.prototype = {
+        /**
+         * 圆对象的初始化函数
+         * @method init
+         * @for Circle
+         * @param {Object} options 初始化参数
+         * @param {Number} options.x 圆心的x坐标,默认`100`
+         * @param {Number} options.y 圆心的y坐标,默认`100`
+         * @param {Number} options.r 圆的半径, 默认`100`
+         * @param {Number} options.startAngle 开始画圆的开始角度, 默认`0`
+         * @param {Number} options.endAngle 圆的开始角度结束角度, 默认`2*PI`
+         * @param {Boolean} options.antiClock 逆时针画圆，默认`true`
+         * @param {String} options.style 圆的颜色, 默认`red`
+         * @param {Boolean} options.isFill 是否填充圆, 默认`true`
+         * @return {Circle} 返回实例Circle的引用
+         */
         init: function(options) {
             //默认参数
             var defaultOptions = {
@@ -454,15 +611,26 @@ ezGame.register("shape", function(eg) {
 
         /**
          * 设置参数
-         * @param {Object} options 参数表, 默认使用原来的参数
-         * @returns {Circle}
+         * 圆对象的初始化函数
+         * @method setOptions
+         * @for Circle
+         * @param {Object} options 初始化参数
+         * @param {Number} options.x 圆心的x坐标,默认`100`
+         * @param {Number} options.y 圆心的y坐标,默认`100`
+         * @param {Number} options.r 圆的半径, 默认`100`
+         * @param {Number} options.startAngle 开始画圆的开始角度, 默认`0`
+         * @param {Number} options.endAngle 圆的开始角度结束角度, 默认`2*PI`
+         * @param {Boolean} options.antiClock 逆时针画圆，默认`true`
+         * @param {String} options.style 圆的颜色, 默认`red`
+         * @param {Boolean} options.isFill 是否填充圆, 默认`true`
+         * @return {Circle} 返回实例Circle的引用
          */
         setOptions: function(options) {
-            this.x = eg.utils.isNum(options.x) ? options.x : this.x;
-            this.y = eg.utils.isNum(options.y) ? options.y : this.y;
-            this.r = eg.utils.isNum(options.r) ? options.r : this.r;
-            this.startAngle = eg.utils.isNum(options.startAngle) ? options.startAngle : this.startAngle;
-            this.endAngle = eg.utils.isNum(options.endAngle) ? options.endAngle : this.endAngle;
+            this.x = eg.utils.isNumber(options.x) ? options.x : this.x;
+            this.y = eg.utils.isNumber(options.y) ? options.y : this.y;
+            this.r = eg.utils.isNumber(options.r) ? options.r : this.r;
+            this.startAngle = eg.utils.isNumber(options.startAngle) ? options.startAngle : this.startAngle;
+            this.endAngle = eg.utils.isNumber(options.endAngle) ? options.endAngle : this.endAngle;
             this.antiClock = eg.utils.isUndefined(options.antiClock) ? this.antiClock : options.antiClock;
             this.style = options.style || this.style;
             this.isFill = eg.utils.isUndefined(options.isFill) ? this.isFill : options.isFill;
@@ -471,7 +639,9 @@ ezGame.register("shape", function(eg) {
 
         /**
          * 绘制圆形
-         * @returns {Circle}
+         * @method draw
+         * @for Circle
+         * @returns {Circle} 返回Circle实例this的引用
          */
         draw: function() {
             var context = eg.context;
@@ -490,9 +660,11 @@ ezGame.register("shape", function(eg) {
 
         /**
          * 将圆形移动一定距离
-         * @param {Num} dx x轴上的增量
-         * @param {Num} dy y轴上的增量
-         * @returns {Circle}
+         * @method move
+         * @for Circle
+         * @param {Number} dx x轴上的增量
+         * @param {Number} dy y轴上的增量
+         * @returns {Circle} 返回Circle实例this的引用
          */
         move: function(dx, dy) {
             dx = dx || 0;
@@ -504,13 +676,15 @@ ezGame.register("shape", function(eg) {
 
         /**
          * 将圆形移动到特定位置
-         * @param {Num} x x轴位置
-         * @param {Num} y y轴位置
-         * @returns {Circle}
+         * @method moveTo
+         * @for Circle
+         * @param {Number} x x轴位置
+         * @param {Number} y y轴位置
+         * @returns {Circle} 返回Circle实例this的引用
          */
         moveTo: function(x, y) {
-            x = eg.utils.isNum(x) ? x : this.x;
-            y = eg.utils.isNum(y) ? y : this.y;
+            x = eg.utils.isNumber(x) ? x : this.x;
+            y = eg.utils.isNumber(y) ? y : this.y;
             this.x = x;
             this.y = y;
             return this;
@@ -518,8 +692,10 @@ ezGame.register("shape", function(eg) {
 
         /**
          * 放大或者缩小圆形
-         * @param {Num} dr 半径增量
-         * return {Circle}
+         * @method resize
+         * @for Circle
+         * @param {Number} dr 半径增量
+         * @returns {Circle} 返回Circle实例this的引用
          */
         resize: function(dr) {
             dr = dr || 0;
@@ -529,31 +705,31 @@ ezGame.register("shape", function(eg) {
 
         /**
          * 将圆形改变到特定大小
-         * @param {Num} r 半径
-         * @return {Circle}
+         * @method resizeTo
+         * @for Circle
+         * @param {Number} r 半径
+         * @returns {Circle} 返回Circle实例this的引用
          */
         resizeTo: function(r) {
-            r = eg.utils.isNum(r) ? r : this.r;
+            r = eg.utils.isNumber(r) ? r : this.r;
             this.r = r;
             return this;
         }
     }
 
     /**
-     * 点
+     * 文本对象
+     * @class Text
+     * @constructor
+     * @param {String} text 文本内容
+     * @param {Object} options 初始化参数
+     * @param {Number} options.x 文本的x坐标,默认`100`
+     * @param {Number} options.y 文本的y坐标,默认`100`
+     * @param {String} options.style 文本颜色, 默认`red`
+     * @param {Boolean} options.isFill 是否填充文本, 默认`true`
+     * @param {String} options.font 字体类型, 默认`14px sans-serif`
+     * @return {Text} 返回实例Text的引用
      */
-    var Point = function(x, y) {
-        if (!(this instanceof arguments.callee)) {
-            return new arguments.callee(x, y);
-        }
-        return new this.init({
-            x: x,
-            y: y,
-            r: 1
-        });
-    }
-    Point.prototype = Circle.prototype;
-
     var Text = function(text, options) {
         if (!(this instanceof arguments.callee)) {
             return new arguments.callee(text, options);
@@ -561,6 +737,19 @@ ezGame.register("shape", function(eg) {
         this.init(text, options);
     }
     Text.prototype = {
+        /**
+         * 参数初始化
+         * @method init
+         * @for Text
+         * @param {String} text 文本内容
+         * @param {Object} options 初始化参数
+         * @param {Number} options.x 文本的x坐标,默认`100`
+         * @param {Number} options.y 文本的y坐标,默认`100`
+         * @param {String} options.style 文本颜色, 默认`red`
+         * @param {Boolean} options.isFill 是否填充文本, 默认`true`
+         * @param {String} options.font 字体类型, 默认`14px sans-serif`
+         * @return {Text} 返回实例Text的引用
+         */
         init: function(text, options) {
             // 默认值对象
             var defaultOptions = {
@@ -579,8 +768,15 @@ ezGame.register("shape", function(eg) {
 
         /**
          * 设置参数
-         * @param {Object} options
-         * @return {Text}
+         * @method setoptions
+         * @for Text
+         * @param {Object} options 参数列表
+         * @param {Number} options.x 文本的x坐标,默认`100`
+         * @param {Number} options.y 文本的y坐标,默认`100`
+         * @param {String} options.style 文本颜色, 默认`red`
+         * @param {Boolean} options.isFill 是否填充文本, 默认`true`
+         * @param {String} options.font 字体类型, 默认`14px sans-serif`
+         * @return {Text} 返回实例Text的引用
          */
         setOptions: function(options) {
             this.x = options.x || this.x;
@@ -596,7 +792,9 @@ ezGame.register("shape", function(eg) {
 
         /**
          * 将文字渲染到canvas
-         * return {Text}
+         * @method draw
+         * @for Text
+         * @return {Text} 返回实例Text的引用
          */
         draw: function() {
             var context = eg.context;
@@ -615,23 +813,42 @@ ezGame.register("shape", function(eg) {
         },
     }
 
-    this.isPoint = function(shape) {
-        return shape instanceof Point;
-    }
-
+    /**
+     * 判断对象是否是矩形
+     * @method isRect
+     * @for shape
+     * @static
+     * @param {Object} 目标对象
+     * @return {Boolean} shape为矩形返回true
+     */
     this.isRect = function(shape) {
         return shape instanceof Rect;
     }
 
+    /**
+     * 判断对象是否是Circle
+     * @method isCircle
+     * @for shape
+     * @static
+     * @param {Object} 目标对象
+     * @return {Boolean} shape为圆返回true
+     */
     this.isCircle = function(shape) {
         return shape instanceof Circle;
     }
 
+    /**
+     * 判断对象是否是Text
+     * @method isText
+     * @for shape
+     * @static
+     * @param {Object} 目标对象
+     * @return {Boolean} shape为文本对象返回true
+     */
     this.isText = function(shape) {
         return shape instanceof Text;
     }
 
-    this.Point = Point;
     this.Rect = Rect;
     this.Circle = Circle;
     this.Text = Text;
@@ -640,8 +857,10 @@ ezGame.register("shape", function(eg) {
 
 /**
  * 输入模块
- * 按键重命名、按键事件绑定
- * input module
+ * 该模块实现按键重命名(映射)、按键事件绑定、按键事件清除及禁止默认按键行为
+ * 通过按键重映射，可以方便获得按键的名字，而不用记住按键的ascii码，
+ * 如：需要绑定按键a，只需要`input.onKeyPress('a', function () {})`
+ * @module input
  */
 ezGame.register("input", function(eg) {
     this.mouseX = 0;
@@ -777,6 +996,11 @@ ezGame.register("input", function(eg) {
 
     /**
      * 判断某个键是否按下
+     * @method isPressed
+     * @for input
+     * @static
+     * @param {String} keyName 按键名
+     * @return {Boolean} 如果被按下，则返回true
      */
     this.isPressed = function(keyName) {
         return !!pressed_keys[keyName];
@@ -784,7 +1008,10 @@ ezGame.register("input", function(eg) {
 
     /**
      * 禁止某个键按下的默认行为
-     * @param {Array | String} keyName 要禁止默认行为的按键
+     * @method preventDefault
+     * @for input
+     * @static
+     * @param {Array|String} keyName 要禁止默认行为的按键
      */
     this.preventDefault = function(keyName) {
         if (eg.utils.isArray(keyName)) {
@@ -798,6 +1025,9 @@ ezGame.register("input", function(eg) {
 
     /**
      * 绑定键盘按下事件, 可绑定多个事件
+     * @method onKeyDown
+     * @for input
+     * @static
      * @param {String} keyName 按键名字
      * @param {Function} handler 事件函数
      */
@@ -811,6 +1041,9 @@ ezGame.register("input", function(eg) {
 
     /**
      * 绑定键盘弹起事件, 可绑定多个事件
+     * @method onKeyUp
+     * @for input
+     * @static
      * @param {String} keyName 按键名字
      * @param {Function} handler 事件函数
      */
@@ -824,6 +1057,9 @@ ezGame.register("input", function(eg) {
 
     /**
      * 清除键盘按下事件处理程序
+     * @method clearDownCallbacks
+     * @for input
+     * @static
      * @param {String} keyName 按键名，为空时清除所有按键按下事件
      */
     this.clearDownCallbacks = function(keyName) {
@@ -836,6 +1072,9 @@ ezGame.register("input", function(eg) {
 
     /**
      * 清除键盘按键松开事件处理程序
+     * @method clearUpCallbacks
+     * @for input
+     * @static
      * @param {String} keyName 按键名，为空时清除所有按键松开事件
      */
     this.clearUpCallbacks = function(keyName) {
@@ -848,33 +1087,23 @@ ezGame.register("input", function(eg) {
 });
 
 /**
- * 碰撞检测
+ * 碰撞检测模块
+ * 该模块实现圆、矩形之间的碰撞检测，只要给detection函数传入两个对象，就能检测该对象的类型,并判断是否发生碰撞检测
+ * @module collision
  */
 ezGame.register("collision", function(eg) {
     var shape = eg.shape;
     var pow = Math.pow;
+    /**
+     * 判断两个对象是否发生碰撞
+     * @method detection
+     * @for collision
+     * @static
+     * @param {Rect|Circle} objectA 对象A，可为圆或矩形
+     * @param {Rect|Circle} objectB 对象B，可为圆或矩形
+     * @return {Boolean} 如果发生碰撞，则返回true, 否则false
+     */
     this.detection = function(objectA, objectB) {
-        // 点和点
-        if (shape.isPoint(objectA) && shape.isPoint(objectB)) {
-            return objectA.x === objectB.x && objectA.y === objectB;
-        }
-
-        // 点和矩形间的碰撞
-        if (shape.isPoint(objectA) && shape.isRect(objectB)) {
-            return (objectA.x >= objectB.x && objectA.x <= objectB.right && objectA.y >= objectB.y && objectA.y <= objectB.bottom);
-        }
-        if (shape.isRect(objectA) && shape.isPoint(objectB)) {
-            return this.detection(objectB, objectA);
-        }
-
-        // 点和圆的碰撞
-        if (shape.isPoint(objectA) && shape.isCircle(objectB)) {
-            return (pow(objectA.x - objectB.x, 2) + pow(objectA.y - objectB.y, 2) <= pow(objectB.r, 2));
-        }
-        if (shape.isCircle(objectA) && shape.isPoint(objectB)) {
-            return this.detection(objectB, objectA);
-        }
-
         // 圆 和 矩形 的碰撞
         if (shape.isCircle(objectA) && shape.isRect(objectB)) {
             return (objectA.x + objectA.r >= objectB.x && objectA.x - objectA.r <= objectB.right && objectA.y + objectA.r >= objectB.y && objectA.y - objectA.r <= objectB.bottom);
@@ -903,6 +1132,7 @@ ezGame.register("collision", function(eg) {
 
 /**
  * 游戏循环模块
+ * @module loop
  */
 ezGame.register("loop", function(eg) {
     var tid, interval;
@@ -928,6 +1158,15 @@ ezGame.register("loop", function(eg) {
         }
     }
 
+    /**
+     * 游戏循环对象
+     * @class GameLoop
+     * @constructor
+     * @param {ezGame} gameObj 游戏对象的引用
+     * @param {Object} options 设置循环的参数
+     * @param {Number} options.fps 每秒刷新的帧数
+     * @return {GameLoop} 返回GameLoop的实例引用
+     */
     var GameLoop = function(gameObj, options) {
         if (!(this instanceof arguments.callee)) {
             return new arguments.callee(gameObj, options);
@@ -936,9 +1175,17 @@ ezGame.register("loop", function(eg) {
     }
 
     GameLoop.prototype = {
+        /**
+         * 实例初始化
+         * @method init
+         * @for GameLoop
+         * @param {Object} options 设置循环的参数
+         * @param {Number} options.fps 每秒刷新的帧数
+         * @return {GameLoop} 返回GameLoop的实例引用
+         */
         init: function(gameObj, options) {
             var defaultOptions = {
-                fps: 60
+                fps: gameObj.fps
             };
             options = options || {};
 
@@ -951,6 +1198,11 @@ ezGame.register("loop", function(eg) {
             this.stop = true;
         },
 
+        /**
+         * 设置循环开始
+         * @method start
+         * @for GameLoop
+         */
         start: function() {
             if (this.stop) { //如果是结束状态则可以开始
                 this.stop = false;
@@ -961,14 +1213,29 @@ ezGame.register("loop", function(eg) {
             }
         },
 
+        /**
+         * 将游戏循环从暂停状态设置为运行状态
+         * @method run
+         * @for GameLoop
+         */
         run: function() {
             this.pause = false;
         },
 
+        /**
+         * 将游戏循环从运行状态设置为暂停状态
+         * @method pause
+         * @for GameLoop
+         */
         pause: function() {
             this.pause = true;
         },
 
+        /**
+         * 将游戏循环从运行状态设置为结束
+         * @method end
+         * @for GameLoop
+         */
         end: function() {
             this.stop = true;
             window.clearTimeout(tid);
@@ -979,9 +1246,31 @@ ezGame.register("loop", function(eg) {
 });
 
 /**
- * 动画帧模块
+ * 动画栅模块
+ * 即一组图片组成的动画，可通过设置为循环播放一组动画帧
+ * @module spriteSheet
  */
 ezGame.register("spriteSheet", function(eg) {
+
+    /**
+     * 动画栅对象
+     * @class SpriteSheet
+     * @constructor
+     * @param {String} id 这组动画栅的标识名
+     * @param {Image|String} src 图片对象或者在loader中的标识名
+     * @param {Object} options 动画栅的显示方式参数
+     * @param {Number} options.x 动画栅在窗口上显示位置的y坐标
+     * @param {Number} options.y 动画栅在窗口上显示位置的x坐标
+     * @param {Number} options.beginX 选择图片的起始x坐标, 默认0
+     * @param {Number} options.beginY 选择图片的起始y坐标, 默认0
+     * @param {Array} options.frameSize 帧的width和height, 默认 [60,60]
+     * @param {Number} options.frameTotal 帧的总数, 默认, 1
+     * @param {Number} options.currentIndex 当前帧的索引, 默认 0
+     * @param {Number} options.duration 动画栅切换帧的时间间隔单位ms, 默认100ms
+     * @param {Boolean} options.isLoop 是否循环显示动画栅,默认false
+     * @param {Function} callback 如果isLoop为false时，显示到最后一帧时调用callback
+     * @return {SpriteSheet} 返回动画栅对象的实例的引用
+     */
     var SpriteSheet = function(id, src, options) {
         if (!(this instanceof arguments.callee)) {
             return new arguments.callee(src, options);
@@ -990,6 +1279,25 @@ ezGame.register("spriteSheet", function(eg) {
     };
 
     SpriteSheet.prototype = {
+        /**
+         * 初始化对象的参数
+         * @method init
+         * @for SpriteSheet
+         * @param {String} id 这组动画栅的标识名
+         * @param {Image|String} src 图片对象或者在loader中的标识名
+         * @param {Object} options 动画栅的显示方式参数
+         * @param {Number} options.x 动画栅在窗口上显示位置的y坐标
+         * @param {Number} options.y 动画栅在窗口上显示位置的x坐标
+         * @param {Number} options.beginX 选择图片的起始x坐标, 默认0
+         * @param {Number} options.beginY 选择图片的起始y坐标, 默认0
+         * @param {Array} options.frameSize 帧的width和height, 默认 [60,60]
+         * @param {Number} options.frameTotal 帧的总数, 默认, 1
+         * @param {Number} options.currentIndex 当前帧的索引, 默认 0
+         * @param {Number} options.duration 动画栅切换帧的时间间隔单位ms, 默认100ms
+         * @param {Boolean} options.isLoop 是否循环显示动画栅,默认false
+         * @param {Function} callback 如果isLoop为false时，显示到最后一帧时调用callback
+         * @return {SpriteSheet} 返回动画栅对象的实例的引用
+         */
         init: function(id, src, options) {
             var image = eg.loader.getImage(src);
             // 默认参数值
@@ -1024,10 +1332,20 @@ ezGame.register("spriteSheet", function(eg) {
             this.now = new Date().getTime();
         },
 
+        /**
+         * 显示下一帧
+         * @method nextframe
+         * @for SpriteSheet
+         */
         nextFrame: function() {
             this.currentIndex = this.currentIndex < this.frameTotal - 1 ? this.currentIndex + 1 : 0;
         },
 
+        /**
+         * 更新动画栅的逻辑数据，为draw做准备
+         * @method update
+         * @for SpriteSheet
+         */
         update: function() {
             if (this.isLoop) {
                 this.now = new Date().getTime();
@@ -1038,6 +1356,10 @@ ezGame.register("spriteSheet", function(eg) {
             }
         },
 
+        /**
+         * 在窗口中渲染出动画帧
+         * @for SpriteSheet
+         */
         draw: function() {
             try {
                 eg.context.drawImage(
@@ -1063,11 +1385,36 @@ ezGame.register("spriteSheet", function(eg) {
 
 /**
  * 精灵模块
+ * @module sprite
  */
 ezGame.register("sprite", function(eg) {
 
     var postive_infinity = Number.POSITIVE_INFINITY;
 
+    /**
+     * 精灵对象
+     * @class Sprite
+     * @constructor
+     * @param {Object} options 精灵对象的初始参数
+     * @param {Number} options.x 精灵在窗口的初始位置的x坐标
+     * @param {Number} options.y 精灵在窗口的初始位置的y坐标
+     * @param {Number} options.imgX 如果精灵是以静态图片显示,图片的坐标x
+     * @param {Number} options.imgY 如果图片的y坐标
+     * @param {Number} options.width 精灵的实际宽度
+     * @param {Number} options.height 精灵的实际高度
+     * @param {Number} options.angle 精灵旋转角度
+     * @param {Number} options.speedX 精灵在x坐标上的移动速度
+     * @param {Number} options.speedY 精灵在y坐标上的移动速度
+     * @param {Number} options.aX 精灵在x坐标上的加速度
+     * @param {Number} options.aY 精灵在y坐标上的加速度
+     * @param {Number} options.maxSpeedX 精灵在x坐标上的最大移动速度
+     * @param {Number} options.maxSpeedY 精灵在y坐标上的最大移动速度
+     * @param {Number} options.maxX 精灵在地图中的x坐标上的最远位置
+     * @param {Number} options.maxY 精灵在地图中的y坐标上的最远位置
+     * @param {Number} options.minX 精灵在地图中的x坐标上的最小位置
+     * @param {Number} options.minY 精灵在地图中的y坐标上的最大位置
+     * @return {Sprite} 返回Sprite的实例引用
+     */
     var Sprite = function(options) {
         if (!(this instanceof arguments.callee)) {
             return new arguments.callee(options);
@@ -1076,6 +1423,30 @@ ezGame.register("sprite", function(eg) {
     }
 
     Sprite.prototype = {
+        /**
+         * Sprite对象实例初始化
+         * @method init
+         * @for Sprite
+         * @param {Object} options 精灵对象的初始参数
+         * @param {Number} options.x 精灵在窗口的初始位置的x坐标
+         * @param {Number} options.y 精灵在窗口的初始位置的y坐标
+         * @param {Number} options.imgX 如果精灵是以静态图片显示,图片的坐标x
+         * @param {Number} options.imgY 如果图片的y坐标
+         * @param {Number} options.width 精灵的实际宽度
+         * @param {Number} options.height 精灵的实际高度
+         * @param {Number} options.angle 精灵旋转角度
+         * @param {Number} options.speedX 精灵在x坐标上的移动速度
+         * @param {Number} options.speedY 精灵在y坐标上的移动速度
+         * @param {Number} options.aX 精灵在x坐标上的加速度
+         * @param {Number} options.aY 精灵在y坐标上的加速度
+         * @param {Number} options.maxSpeedX 精灵在x坐标上的最大移动速度
+         * @param {Number} options.maxSpeedY 精灵在y坐标上的最大移动速度
+         * @param {Number} options.maxX 精灵在地图中的x坐标上的最远位置
+         * @param {Number} options.maxY 精灵在地图中的y坐标上的最远位置
+         * @param {Number} options.minX 精灵在地图中的x坐标上的最小位置
+         * @param {Number} options.minY 精灵在地图中的y坐标上的最大位置
+         * @return {Sprite} 返回Sprite的实例引用
+         */
         init: function(options) {
             var defaultObj = {
                 x: 0,
@@ -1128,7 +1499,9 @@ ezGame.register("sprite", function(eg) {
         },
 
         /**
-         *返回包含该sprite的矩形对象
+         * 返回包含该sprite的矩形对象
+         * @method getRect
+         * @for Sprite
          */
         getRect: function() {
             return new eg.shape.Rect({
@@ -1141,6 +1514,8 @@ ezGame.register("sprite", function(eg) {
 
         /**
          * 返回该sprite的position信息
+         * @method getPosition
+         * @for Sprite
          * @return {Object}
          */
         getPosition: function() {
@@ -1152,6 +1527,8 @@ ezGame.register("sprite", function(eg) {
 
         /**
          * 设置sprite的位置
+         * @method setPosition
+         * @for Sprite
          * @param {Object} pos 目标位置
          * @param {int} pos.x 目标位置x坐标
          * @param {int} pos.y 目标位置y坐标
@@ -1165,13 +1542,19 @@ ezGame.register("sprite", function(eg) {
 
         /**
          * 添加动画
+         * @method addAnimation
+         * @for Sprite
+         * @param {SpriteSheet} spriteSheet 动画栅SpriteSheet对象
          */
         addAnimation: function(spriteSheet) {
             this.spriteSheetList[spriteSheet.id] = spriteSheet;
         },
 
         /**
-         * 设置当前显示动画
+         * 设置当前的显示动画
+         * @method setCurrentAnimation
+         * @for Sprite
+         * @param {String|SpriteSheet} id 动画栅的标识名或者动画栅SpriteSheet对象
          */
         setCurrentAnimation: function(id) { //可传入id或spriteSheet
             if (!this.isCurrentAnimation(id)) {
@@ -1184,11 +1567,13 @@ ezGame.register("sprite", function(eg) {
                     this.image = this.imgX = this.imgY = undefined;
                 }
             }
-
         },
 
         /**
          * 判断当前动画是否为该id的动画
+         * @method isCurrentAnimation
+         * @for Sprite
+         * @param {String|SpriteSheet} id 动画栅的标识名或者动画栅SpriteSheet对象
          */
         isCurrentAnimation: function(id) {
             if (eg.utils.isString(id)) {
@@ -1200,6 +1585,11 @@ ezGame.register("sprite", function(eg) {
 
         /**
          * 设置当前显示图像
+         * @method setCurrentImage
+         * @for Sprite
+         * @param {String} name 图片在loader中标识名
+         * @param {Number} imgX 目标图像在原图中的x坐标
+         * @param {Number} imgY 目标图像在原图中y坐标
          */
         setCurrentImage: function(name, imgX, imgY) {
             if (!this.isCurrentImage(name, imgX, imgY)) {
@@ -1214,6 +1604,12 @@ ezGame.register("sprite", function(eg) {
 
         /**
          * 判断当前图像是否为该图像
+         * @method isCurrentImage
+         * @for Sprite
+         * @param {String} name 图片在loader中标识名
+         * @param {Number} imgX 目标图像在原图中的x坐标
+         * @param {Number} imgY 目标图像在原图中y坐标
+         * @return {Boolean} 如果返回为当前图片，返回true，否则false
          **/
         isCurrentImage: function(name, imgX, imgY) {
             imgX = imgX || 0;
@@ -1225,6 +1621,19 @@ ezGame.register("sprite", function(eg) {
 
         /**
          * 设置移动参数
+         * @method setMovement
+         * @for Sprite
+         * @param {Object} options sprite的移动参数
+         * @param {Number} options.speedX 精灵在x坐标上的移动速度
+         * @param {Number} options.speedY 精灵在y坐标上的移动速度
+         * @param {Number} options.aX 精灵在x坐标上的加速度
+         * @param {Number} options.aY 精灵在y坐标上的加速度
+         * @param {Number} options.maxSpeedX 精灵在x坐标上的最大移动速度
+         * @param {Number} options.maxSpeedY 精灵在y坐标上的最大移动速度
+         * @param {Number} options.maxX 精灵在地图中的x坐标上的最远位置
+         * @param {Number} options.maxY 精灵在地图中的y坐标上的最远位置
+         * @param {Number} options.minX 精灵在地图中的x坐标上的最小位置
+         * @param {Number} options.minY 精灵在地图中的y坐标上的最大位置
          */
         setMovement: function(options) {
             isUndefined = eg.utils.isUndefined;
@@ -1251,7 +1660,9 @@ ezGame.register("sprite", function(eg) {
         },
 
         /**
-         * 重置移动参数回到初始值
+         * 重置移动参数回到静止状态
+         * @method resetMovement
+         * @for Sprite
          */
         resetMovement: function() {
             this.speedX = 0;
@@ -1268,6 +1679,8 @@ ezGame.register("sprite", function(eg) {
 
         /**
          * 更新位置和帧动画
+         * @method update
+         * @for Sprite
          */
         update: function() {
             if (this.aX != 0) {
@@ -1309,6 +1722,8 @@ ezGame.register("sprite", function(eg) {
 
         /**
          * 绘制出sprite
+         * @method draw
+         * @for Sprite
          */
         draw: function() {
             var context = eg.context;
@@ -1321,6 +1736,11 @@ ezGame.register("sprite", function(eg) {
 
         /**
          * 移动一定距离
+         * @method move
+         * @for Sprite
+         * @param {Number} dx x方向上的增量
+         * @param {Number} dy y方向上的增量
+         * @return {Sprite} 返回this的引用
          */
         move: function(dx, dy) {
             dx = dx || 0;
@@ -1333,7 +1753,12 @@ ezGame.register("sprite", function(eg) {
         },
 
         /**
-         * 移动到某处
+         * 移动到指定的位置
+         * @method moveTo
+         * @for Sprite
+         * @param {Number} x x轴的位置
+         * @param {Number} y y轴的位置
+         * @return {Sprite} 返回this的引用
          */
         moveTo: function(x, y) {
             this.x = Math.min(Math.max(this.minX, x), this.maxX);
@@ -1343,6 +1768,10 @@ ezGame.register("sprite", function(eg) {
 
         /**
          * 旋转一定角度
+         * @method rotate
+         * @for Sprite
+         * @param {Number} da 旋转的增量
+         * @return {Sprite} 返回this的引用
          */
         rotate: function(da) {
             this.angle += da;
@@ -1350,7 +1779,11 @@ ezGame.register("sprite", function(eg) {
         },
 
         /**
-         * 旋转到一定角度
+         * 旋转到指定的角度
+         * @method rotateTo
+         * @for Sprite
+         * @param {Number} a 旋转到指定的角度值
+         * @return {Sprite} 返回this的引用
          */
         rotateTo: function(a) {
             this.angle = a;
@@ -1360,6 +1793,11 @@ ezGame.register("sprite", function(eg) {
 
         /**
          * 改变一定尺寸
+         * @method resize
+         * @for Sprite
+         * @param {Number} dw width放大的增量
+         * @param {Number} dh height放大的增量
+         * @return {Sprite} 返回this的引用
          */
         resize: function(dw, dh) {
             this.width += dw;
@@ -1369,6 +1807,11 @@ ezGame.register("sprite", function(eg) {
 
         /**
          * 改变到一定尺寸
+         * @method resize
+         * @for Sprite
+         * @param {Number} width 宽的值
+         * @param {Number} height 高的值
+         * @return {Sprite} 返回this的引用
          */
         resizeTo: function(width, height) {
             this.width = width;
@@ -1381,9 +1824,13 @@ ezGame.register("sprite", function(eg) {
 
 /**
  * 场景模块
+ * @module scene
  */
 ezGame.register("scene", function(eg) {
     /**
+     * 场景对象
+     * @class Scene
+     * @constructor
      * @prama {Object|string} image 场景的背景图片
      * @prama {Object} options 可选参数
      * @param {number} options.width 显示窗口宽度
@@ -1408,6 +1855,8 @@ ezGame.register("scene", function(eg) {
     Scene.prototype = {
         /**
          * 初始化函数
+         * @method init
+         * @for Scene
          * @prama {Object|string} image 场景的背景图片
          * @prama {Object} options 可选参数
          * @param {number} options.width 显示窗口宽度
@@ -1420,6 +1869,7 @@ ezGame.register("scene", function(eg) {
          * @param {number} options.activityInterval 被控制精灵可活动区间宽度的1/2
          * @param {boolean} options.isLoop 背景图片是否循环
          * @param {Function} options.onEnd 背景图片是不循环时滚动到终点的回调函数
+         * return {Scene} 返回场景实例的引用
          */
         init: function(image, options) {
 
@@ -1462,6 +1912,9 @@ ezGame.register("scene", function(eg) {
 
         /**
          * 设置被控制的精灵对象
+         * @method setCenterPlayer
+         * @for Scene
+         * @param {Sprite} sprite 被控制的对象
          */
         setCenterPlayer: function(sprite) {
             this.player = sprite;
@@ -1469,6 +1922,8 @@ ezGame.register("scene", function(eg) {
 
         /**
          * 设置滚动开始
+         * @method centerPlayer
+         * @for Scene
          */
         centerPlayer: function() {
             this.isCenterPlayer = true;
@@ -1476,6 +1931,8 @@ ezGame.register("scene", function(eg) {
 
         /**
          * 清除滚动模式
+         * @method clearCenterPlayer
+         * @for Scene
          */
         clearCenterPlayer: function() {
             this.isCenterPlayer = false;
@@ -1483,6 +1940,8 @@ ezGame.register("scene", function(eg) {
 
         /**
          * 逻辑更新，调整场景参数及各个其他物体的位置
+         * @method update
+         * @for Scene
          */
         update: function(spriteList) {
             if (this.isCenterPlayer) {
@@ -1545,7 +2004,11 @@ ezGame.register("scene", function(eg) {
             }
         },
 
-        // 绘制场景
+        /**
+         * 绘制场景
+         * @method draw
+         * @for Scene
+         */
         draw: function() {
             try {
                 eg.context.drawImage(this.image, this.x < 0 ? 0 : this.x, this.y < 0 ? 0 : this.y, this.width, this.height, 0, 0, this.width, this.height);
