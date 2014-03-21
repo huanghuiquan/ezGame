@@ -1,0 +1,2922 @@
+{
+    "project": {
+        "name": "ezGame",
+        "description": "A easy Javascript 2D game framework base HTML5.",
+        "version": "0.1.0",
+        "url": ""
+    },
+    "files": {
+        "src/ezGame.js": {
+            "name": "src/ezGame.js",
+            "modules": {
+                "utils": 1,
+                "loader": 1,
+                "shape": 1,
+                "input": 1,
+                "collision": 1,
+                "loop": 1,
+                "spriteSheet": 1,
+                "sprite": 1,
+                "scene": 1
+            },
+            "classes": {
+                "ezGame": 1,
+                "Rect": 1,
+                "Circle": 1,
+                "Text": 1,
+                "GameLoop": 1,
+                "SpriteSheet": 1,
+                "Sprite": 1,
+                "Scene": 1
+            },
+            "fors": {
+                "ezGame": 1,
+                "utils": 1,
+                "loader": 1,
+                "Rect": 1,
+                "Circle": 1,
+                "Text": 1,
+                "shape": 1,
+                "input": 1,
+                "collision": 1,
+                "GameLoop": 1,
+                "SpriteSheet": 1,
+                "Sprite": 1,
+                "Scene": 1
+            },
+            "namespaces": {}
+        }
+    },
+    "modules": {
+        "utils": {
+            "name": "utils",
+            "submodules": {},
+            "classes": {
+                "ezGame": 1
+            },
+            "fors": {
+                "utils": 1
+            },
+            "namespaces": {},
+            "tag": "module",
+            "file": "src/ezGame.js",
+            "line": 9,
+            "description": "工具模块"
+        },
+        "loader": {
+            "name": "loader",
+            "submodules": {},
+            "classes": {
+                "utils": 1
+            },
+            "fors": {
+                "loader": 1
+            },
+            "namespaces": {},
+            "tag": "module",
+            "file": "src/ezGame.js",
+            "line": 305,
+            "description": "资源加载器"
+        },
+        "shape": {
+            "name": "shape",
+            "submodules": {},
+            "classes": {
+                "loader": 1,
+                "Rect": 1,
+                "Circle": 1,
+                "Text": 1
+            },
+            "fors": {
+                "Rect": 1,
+                "Circle": 1,
+                "Text": 1,
+                "shape": 1
+            },
+            "namespaces": {},
+            "tag": "module",
+            "file": "src/ezGame.js",
+            "line": 752,
+            "description": "图形模块,包含点、矩形、圆、文本对象"
+        },
+        "input": {
+            "name": "input",
+            "submodules": {},
+            "classes": {
+                "shape": 1
+            },
+            "fors": {
+                "input": 1
+            },
+            "namespaces": {},
+            "tag": "module",
+            "file": "src/ezGame.js",
+            "line": 890,
+            "description": "输入模块\n该模块实现按键重命名(映射)、按键事件绑定、按键事件清除及禁止默认按键行为\n通过按键重映射，可以方便获得按键的名字，而不用记住按键的ascii码，\n如：需要绑定按键a，只需要`input.onKeyPress('a', function () {})`"
+        },
+        "collision": {
+            "name": "collision",
+            "submodules": {},
+            "classes": {
+                "input": 1
+            },
+            "fors": {
+                "collision": 1
+            },
+            "namespaces": {},
+            "tag": "module",
+            "file": "src/ezGame.js",
+            "line": 1121,
+            "description": "碰撞检测模块\n该模块实现圆、矩形之间的碰撞检测，只要给detection函数传入两个对象，就能检测该对象的类型,并判断是否发生碰撞检测"
+        },
+        "loop": {
+            "name": "loop",
+            "submodules": {},
+            "classes": {
+                "collision": 1
+            },
+            "fors": {
+                "GameLoop": 1
+            },
+            "namespaces": {},
+            "tag": "module",
+            "file": "src/ezGame.js",
+            "line": 1165,
+            "description": "游戏循环模块"
+        },
+        "spriteSheet": {
+            "name": "spriteSheet",
+            "submodules": {},
+            "classes": {
+                "GameLoop": 1
+            },
+            "fors": {
+                "SpriteSheet": 1
+            },
+            "namespaces": {},
+            "tag": "module",
+            "file": "src/ezGame.js",
+            "line": 1193,
+            "description": "动画栅模块\n即一组图片组成的动画，可通过设置为循环播放一组动画帧"
+        },
+        "sprite": {
+            "name": "sprite",
+            "submodules": {},
+            "classes": {
+                "SpriteSheet": 1
+            },
+            "fors": {
+                "Sprite": 1
+            },
+            "namespaces": {},
+            "tag": "module",
+            "file": "src/ezGame.js",
+            "line": 1287,
+            "description": "精灵模块"
+        },
+        "scene": {
+            "name": "scene",
+            "submodules": {},
+            "classes": {
+                "Sprite": 1,
+                "Scene": 1
+            },
+            "fors": {
+                "Scene": 1
+            },
+            "namespaces": {},
+            "tag": "module",
+            "file": "src/ezGame.js",
+            "line": 1871,
+            "description": "场景模块"
+        }
+    },
+    "classes": {
+        "ezGame": {
+            "name": "ezGame",
+            "shortname": "ezGame",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "utils",
+            "file": "src/ezGame.js",
+            "line": 9,
+            "description": "ezGame的主类, 可通过其ezGame.register方法扩展"
+        },
+        "utils": {
+            "name": "utils",
+            "shortname": "utils",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "loader",
+            "namespace": ""
+        },
+        "loader": {
+            "name": "loader",
+            "shortname": "loader",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "shape",
+            "namespace": ""
+        },
+        "Rect": {
+            "name": "Rect",
+            "shortname": "Rect",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "shape",
+            "namespace": "",
+            "file": "src/ezGame.js",
+            "line": 429,
+            "description": "矩形对象",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "options",
+                    "description": "初始化参数",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "x",
+                            "description": "矩形在画布上的x坐标，默认`0`",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "y",
+                            "description": "矩形在画布上的y坐标, 默认`0`",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "width",
+                            "description": "矩形宽度, 默认`100`",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "height",
+                            "description": "矩形高度, 默认`100`",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "style",
+                            "description": "矩形的颜色, 默认`red`",
+                            "type": "String"
+                        },
+                        {
+                            "name": "isFill",
+                            "description": "是否填充矩形, 默认`true`",
+                            "type": "Boolean"
+                        }
+                    ]
+                }
+            ],
+            "return": {
+                "description": "返回矩形对象实例",
+                "type": "Rect"
+            }
+        },
+        "Circle": {
+            "name": "Circle",
+            "shortname": "Circle",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "shape",
+            "namespace": "",
+            "file": "src/ezGame.js",
+            "line": 590,
+            "description": "圆形对象",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "options",
+                    "description": "初始化参数",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "x",
+                            "description": "圆心的x坐标,默认`100`",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "y",
+                            "description": "圆心的y坐标,默认`100`",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "r",
+                            "description": "圆的半径, 默认`100`",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "startAngle",
+                            "description": "开始画圆的开始角度, 默认`0`",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "endAngle",
+                            "description": "圆的开始角度结束角度, 默认`2*PI`",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "antiClock",
+                            "description": "逆时针画圆，默认`true`",
+                            "type": "Boolean"
+                        },
+                        {
+                            "name": "style",
+                            "description": "圆的颜色, 默认`red`",
+                            "type": "String"
+                        },
+                        {
+                            "name": "isFill",
+                            "description": "是否填充圆, 默认`true`",
+                            "type": "Boolean"
+                        }
+                    ]
+                }
+            ],
+            "return": {
+                "description": "返回实例Circle的引用",
+                "type": "Circle"
+            }
+        },
+        "Text": {
+            "name": "Text",
+            "shortname": "Text",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "shape",
+            "namespace": "",
+            "file": "src/ezGame.js",
+            "line": 752,
+            "description": "文本对象",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "text",
+                    "description": "文本内容",
+                    "type": "String"
+                },
+                {
+                    "name": "options",
+                    "description": "初始化参数",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "x",
+                            "description": "文本的x坐标,默认`100`",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "y",
+                            "description": "文本的y坐标,默认`100`",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "style",
+                            "description": "文本颜色, 默认`red`",
+                            "type": "String"
+                        },
+                        {
+                            "name": "isFill",
+                            "description": "是否填充文本, 默认`true`",
+                            "type": "Boolean"
+                        },
+                        {
+                            "name": "font",
+                            "description": "字体类型, 默认`14px sans-serif`",
+                            "type": "String"
+                        }
+                    ]
+                }
+            ],
+            "return": {
+                "description": "返回实例Text的引用",
+                "type": "Text"
+            }
+        },
+        "shape": {
+            "name": "shape",
+            "shortname": "shape",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "input",
+            "namespace": ""
+        },
+        "input": {
+            "name": "input",
+            "shortname": "input",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "collision",
+            "namespace": ""
+        },
+        "collision": {
+            "name": "collision",
+            "shortname": "collision",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "loop",
+            "namespace": ""
+        },
+        "GameLoop": {
+            "name": "GameLoop",
+            "shortname": "GameLoop",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "spriteSheet",
+            "namespace": "",
+            "file": "src/ezGame.js",
+            "line": 1193,
+            "description": "游戏循环对象",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "gameObj",
+                    "description": "游戏对象的引用",
+                    "type": "EzGame"
+                },
+                {
+                    "name": "options",
+                    "description": "设置循环的参数",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "fps",
+                            "description": "每秒刷新的帧数",
+                            "type": "Number"
+                        }
+                    ]
+                }
+            ],
+            "return": {
+                "description": "返回GameLoop的实例引用",
+                "type": "GameLoop"
+            }
+        },
+        "SpriteSheet": {
+            "name": "SpriteSheet",
+            "shortname": "SpriteSheet",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "sprite",
+            "namespace": "",
+            "file": "src/ezGame.js",
+            "line": 1287,
+            "description": "动画栅对象",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "id",
+                    "description": "这组动画栅的标识名",
+                    "type": "String"
+                },
+                {
+                    "name": "src",
+                    "description": "图片对象或者在loader中的标识名",
+                    "type": "Image|String"
+                },
+                {
+                    "name": "options",
+                    "description": "动画栅的显示方式参数",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "x",
+                            "description": "动画栅在窗口上显示位置的y坐标",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "y",
+                            "description": "动画栅在窗口上显示位置的x坐标",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "beginX",
+                            "description": "选择图片的起始x坐标, 默认0",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "beginY",
+                            "description": "选择图片的起始y坐标, 默认0",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "frameSize",
+                            "description": "帧的width和height, 默认 [60,60]",
+                            "type": "Array"
+                        },
+                        {
+                            "name": "frameTotal",
+                            "description": "帧的总数, 默认, 1",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "currentIndex",
+                            "description": "当前帧的索引, 默认 0",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "duration",
+                            "description": "动画栅切换帧的时间间隔单位ms, 默认100ms",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "isLoop",
+                            "description": "是否循环显示动画栅,默认false",
+                            "type": "Boolean"
+                        }
+                    ]
+                },
+                {
+                    "name": "callback",
+                    "description": "如果isLoop为false时，显示到最后一帧时调用callback",
+                    "type": "Function"
+                }
+            ],
+            "return": {
+                "description": "返回动画栅对象的实例的引用",
+                "type": "SpriteSheet"
+            }
+        },
+        "Sprite": {
+            "name": "Sprite",
+            "shortname": "Sprite",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "scene",
+            "namespace": "",
+            "file": "src/ezGame.js",
+            "line": 1426,
+            "description": "精灵对象",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "options",
+                    "description": "精灵对象的初始参数",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "x",
+                            "description": "精灵在窗口的初始位置的x坐标",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "y",
+                            "description": "精灵在窗口的初始位置的y坐标",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "imgX",
+                            "description": "如果精灵是以静态图片显示,图片的坐标x",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "imgY",
+                            "description": "如果图片的y坐标",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "width",
+                            "description": "精灵的实际宽度",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "height",
+                            "description": "精灵的实际高度",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "angle",
+                            "description": "精灵旋转角度",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "speedX",
+                            "description": "精灵在x坐标上的移动速度",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "speedY",
+                            "description": "精灵在y坐标上的移动速度",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "aX",
+                            "description": "精灵在x坐标上的加速度",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "aY",
+                            "description": "精灵在y坐标上的加速度",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "maxSpeedX",
+                            "description": "精灵在x坐标上的最大移动速度",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "maxSpeedY",
+                            "description": "精灵在y坐标上的最大移动速度",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "maxX",
+                            "description": "精灵在地图中的x坐标上的最远位置",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "maxY",
+                            "description": "精灵在地图中的y坐标上的最远位置",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "minX",
+                            "description": "精灵在地图中的x坐标上的最小位置",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "minY",
+                            "description": "精灵在地图中的y坐标上的最大位置",
+                            "type": "Number"
+                        }
+                    ]
+                }
+            ],
+            "return": {
+                "description": "返回Sprite的实例引用",
+                "type": "Sprite"
+            }
+        },
+        "Scene": {
+            "name": "Scene",
+            "shortname": "Scene",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "scene",
+            "namespace": "",
+            "file": "src/ezGame.js",
+            "line": 1871,
+            "description": "场景对象",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "image",
+                    "description": "场景的背景图片",
+                    "type": "Object|string"
+                },
+                {
+                    "name": "options",
+                    "description": "可选参数",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "width",
+                            "description": "显示窗口宽度",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "height",
+                            "description": "显示窗口高度",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "imgWidth",
+                            "description": "背景图片宽度",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "imgHeight",
+                            "description": "背景图片高度",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "x",
+                            "description": "背景图片可见的x坐标",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "y",
+                            "description": "背景图片可见的y坐标",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "centerX",
+                            "description": "被控制精灵可活动区间的中间位置",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "activityInterval",
+                            "description": "被控制精灵可活动区间宽度的1/2",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "isLoop",
+                            "description": "背景图片是否循环",
+                            "type": "Boolean"
+                        },
+                        {
+                            "name": "onEnd",
+                            "description": "背景图片是不循环时滚动到终点的回调函数\nreturn {Object} Scene的实例",
+                            "type": "Function"
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    "classitems": [
+        {
+            "file": "src/ezGame.js",
+            "line": 14,
+            "description": "ezGame实例的初始化",
+            "itemtype": "method",
+            "name": "init",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "ezGame实例的初始化参数",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "width",
+                            "description": "游戏窗口宽度",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "height",
+                            "description": "游戏窗口高度",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "bgColor",
+                            "description": "游戏窗口背景颜色",
+                            "type": "String"
+                        },
+                        {
+                            "name": "fps",
+                            "description": "游戏界面的每秒刷新帧数",
+                            "type": "Number"
+                        }
+                    ]
+                }
+            ],
+            "return": {
+                "description": "返回新构建的ezGame实例",
+                "type": "Object"
+            },
+            "class": "ezGame"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 58,
+            "description": "模块注册, 可以将各个模块的注册到主类中，以达到扩展ezGame的作用",
+            "example": [
+                "\n     ezGame.register('event', function (eg){\n         ...\n     });\n\n     // 然后可以通过`ezGame.event`来使用该模块的类"
+            ],
+            "itemtype": "method",
+            "name": "register",
+            "params": [
+                {
+                    "name": "namespace",
+                    "description": "模块名",
+                    "type": "String"
+                },
+                {
+                    "name": "func",
+                    "description": "回调函数，在里面写下模块的具体内容,回调函数包含一个ezGame实例参数",
+                    "type": "Function(ezGame)"
+                }
+            ],
+            "return": {
+                "description": "返回空值",
+                "type": "Undefined"
+            },
+            "class": "ezGame"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 85,
+            "description": "更新游戏逻辑，包括所有精灵及场景",
+            "itemtype": "method",
+            "name": "update",
+            "class": "ezGame"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 104,
+            "description": "渲染游戏界面，包括所有精灵及场景",
+            "itemtype": "method",
+            "name": "draw",
+            "class": "ezGame"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 126,
+            "description": "ezGame的选择器，返回选中的元素的集合",
+            "itemtype": "method",
+            "name": "$",
+            "static": 1,
+            "params": [
+                {
+                    "name": "id",
+                    "description": "选择器",
+                    "type": "String"
+                },
+                {
+                    "name": "parent",
+                    "description": "父元素，默认为document",
+                    "type": "HTMLNode"
+                }
+            ],
+            "return": {
+                "description": "选中元素的集合",
+                "type": "Array"
+            },
+            "class": "utils",
+            "module": "utils"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 140,
+            "description": "类继承辅助函数, 不继承父对象的实例属性,只继承父对象的原型",
+            "itemtype": "method",
+            "name": "inherit",
+            "static": 1,
+            "params": [
+                {
+                    "name": "C",
+                    "description": "子对象",
+                    "type": "Object"
+                },
+                {
+                    "name": "P",
+                    "description": "父对象",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Undefined"
+            },
+            "class": "utils",
+            "module": "utils"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 159,
+            "description": "判断参数是否为undefined",
+            "itemtype": "method",
+            "name": "isUndefined",
+            "static": 1,
+            "params": [
+                {
+                    "name": "elem",
+                    "description": "目标变量",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "如果为undefined返回true",
+                "type": "Boolean"
+            },
+            "class": "utils",
+            "module": "utils"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 171,
+            "description": "判断参数是否为数组",
+            "itemtype": "method",
+            "name": "isArray",
+            "static": 1,
+            "params": [
+                {
+                    "name": "elem",
+                    "description": "目标变量",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "如果为数组返回true,否则返回false",
+                "type": "Boolean"
+            },
+            "class": "utils",
+            "module": "utils"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 183,
+            "description": "判断参数是否为Object类型(除了Number,String,Boolean,undefined,null基本类型外的其他类型)",
+            "itemtype": "method",
+            "name": "isObject",
+            "static": 1,
+            "params": [
+                {
+                    "name": "elem",
+                    "description": "目标变量",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "如果变量为对象返回true,否则返回false",
+                "type": "Boolean"
+            },
+            "class": "utils",
+            "module": "utils"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 195,
+            "description": "判断参数是否为字符串类型",
+            "itemtype": "method",
+            "name": "isString",
+            "static": 1,
+            "params": [
+                {
+                    "name": "elem",
+                    "description": "目标变量",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "如果变量为字符串返回true,否则返回false",
+                "type": "Boolean"
+            },
+            "class": "utils",
+            "module": "utils"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 207,
+            "description": "判断参数是否为数值类型",
+            "itemtype": "method",
+            "name": "isNumber",
+            "static": 1,
+            "params": [
+                {
+                    "name": "elem",
+                    "description": "目标变量",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "如果变量为数字返回true,否则返回false",
+                "type": "Boolean"
+            },
+            "class": "utils",
+            "module": "utils"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 219,
+            "description": "判断参数是否为function类型",
+            "itemtype": "method",
+            "name": "isFunction",
+            "static": 1,
+            "params": [
+                {
+                    "name": "elem",
+                    "description": "目标变量",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "如果变量为函数返回true,否则返回false",
+                "type": "Boolean"
+            },
+            "class": "utils",
+            "module": "utils"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 231,
+            "description": "复制对象属性",
+            "itemtype": "method",
+            "name": "extend",
+            "static": 1,
+            "params": [
+                {
+                    "name": "destination",
+                    "description": "被扩展的对象",
+                    "type": "Object"
+                },
+                {
+                    "name": "source",
+                    "description": "扩展来源",
+                    "type": "Object"
+                }
+            ],
+            "prama": "{Boolean} isCover 是否覆盖原有属性,默认true\nreturn {Object} 返回已被扩展的目标对象",
+            "class": "utils",
+            "module": "utils"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 252,
+            "description": "计算对象属性的数量， 注意：不包含继承属性",
+            "itemtype": "method",
+            "name": "count",
+            "static": 1,
+            "params": [
+                {
+                    "name": "obj",
+                    "description": "目标对象",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "除掉继承外的属性数量",
+                "type": "Number"
+            },
+            "class": "utils",
+            "module": "utils"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 270,
+            "description": "清除当前窗口的所有颜色",
+            "itemtype": "method",
+            "name": "clearCanvas",
+            "static": 1,
+            "return": {
+                "description": "返回该窗口的引用this",
+                "type": "Object"
+            },
+            "class": "utils",
+            "module": "utils"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 282,
+            "description": "获取元素在页面中的位置",
+            "itemtype": "method",
+            "name": "getElementPos",
+            "static": 1,
+            "params": [
+                {
+                    "name": "element",
+                    "description": "DOM元素",
+                    "type": "HTMLElement"
+                }
+            ],
+            "return": {
+                "description": "left和top的值",
+                "type": "Object"
+            },
+            "class": "utils",
+            "module": "utils"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 311,
+            "description": "图片总数",
+            "attribue": "total",
+            "type": "Number",
+            "class": "utils",
+            "module": "loader"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 318,
+            "description": "图片已加载数",
+            "attribue": "loadedCount",
+            "type": "Number",
+            "class": "utils",
+            "module": "loader"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 325,
+            "description": "图片已加载百分比",
+            "attribue": "loadedPercent",
+            "type": "Number",
+            "class": "utils",
+            "module": "loader"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 332,
+            "description": "正在加载中的图片",
+            "attribue": "loadingImgs",
+            "type": "Object",
+            "class": "utils",
+            "module": "loader"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 339,
+            "description": "已加载完成的图片集合",
+            "attribue": "loadedImgs",
+            "type": "Object",
+            "class": "utils",
+            "module": "loader"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 346,
+            "description": "加载失败的图片集",
+            "attribue": "loadFailImgs",
+            "type": "Object",
+            "class": "utils",
+            "module": "loader"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 353,
+            "description": "开始加载资源",
+            "itemtype": "method",
+            "name": "start",
+            "static": 1,
+            "params": [
+                {
+                    "name": "items",
+                    "description": "资源列表",
+                    "type": "Object"
+                },
+                {
+                    "name": "gameObj",
+                    "description": "游戏对象",
+                    "type": "Object"
+                },
+                {
+                    "name": "callbackforsuccess",
+                    "description": "加载成功是调用",
+                    "type": "Function(gameObj, loader)"
+                },
+                {
+                    "name": "callbackforfail",
+                    "description": "加载失败时调用",
+                    "type": "Function(gameObj, loader)"
+                },
+                {
+                    "name": "timeout",
+                    "description": "预设最长加载时间,默认30s，如果，超过时间则设置为加载失败",
+                    "type": "Number"
+                }
+            ],
+            "class": "loader",
+            "module": "loader"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 400,
+            "description": "通过图片名获取图片对象",
+            "itemtype": "method",
+            "name": "getImage",
+            "static": 1,
+            "params": [
+                {
+                    "name": "name",
+                    "description": "图片名",
+                    "type": "String|Image"
+                }
+            ],
+            "return": {
+                "description": "返回name对应的图像对象",
+                "type": "Image|undefined"
+            },
+            "class": "loader",
+            "module": "loader"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 420,
+            "description": "更新right和bottom的值",
+            "prama": "{Shape} elem 图形对象",
+            "class": "loader",
+            "module": "shape"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 450,
+            "description": "矩形对象的初始化函数",
+            "itemtype": "method",
+            "name": "init",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "初始化参数",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "x",
+                            "description": "矩形在画布上的x坐标，默认`0`",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "y",
+                            "description": "矩形在画布上的y坐标, 默认`0`",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "width",
+                            "description": "矩形宽度, 默认`100`",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "height",
+                            "description": "矩形高度, 默认`100`",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "style",
+                            "description": "矩形的颜色, 默认`red`",
+                            "type": "String"
+                        },
+                        {
+                            "name": "isFill",
+                            "description": "是否填充矩形, 默认`true`",
+                            "type": "Boolean"
+                        }
+                    ]
+                }
+            ],
+            "return": {
+                "description": "返回矩形对象实例",
+                "type": "Rect"
+            },
+            "class": "Rect",
+            "module": "shape"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 479,
+            "description": "设置参数",
+            "itemtype": "method",
+            "name": "setOptions",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "初始化参数",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "x",
+                            "description": "矩形在画布上的x坐标，默认`0`",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "y",
+                            "description": "矩形在画布上的y坐标, 默认`0`",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "width",
+                            "description": "矩形宽度, 默认`100`",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "height",
+                            "description": "矩形高度, 默认`100`",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "style",
+                            "description": "矩形的颜色, 默认`red`",
+                            "type": "String"
+                        },
+                        {
+                            "name": "isFill",
+                            "description": "是否填充矩形, 默认`true`",
+                            "type": "Boolean"
+                        }
+                    ]
+                }
+            ],
+            "return": {
+                "description": "返回矩形对象this的引用",
+                "type": "Rect"
+            },
+            "class": "Rect",
+            "module": "shape"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 502,
+            "description": "绘制矩形",
+            "itemtype": "method",
+            "name": "draw",
+            "return": {
+                "description": "返回矩形对象this的引用",
+                "type": "Rect"
+            },
+            "class": "Rect",
+            "module": "shape"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 520,
+            "description": "将矩形移动一定距离",
+            "itemtype": "method",
+            "name": "move",
+            "params": [
+                {
+                    "name": "dx",
+                    "description": "x轴上的增量",
+                    "type": "Number"
+                },
+                {
+                    "name": "dy",
+                    "description": "y轴上的增量",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "返回矩形对象this的引用",
+                "type": "Rect"
+            },
+            "class": "Rect",
+            "module": "shape"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 538,
+            "description": "将矩形移动到特定位置",
+            "itemtype": "method",
+            "name": "moveTo",
+            "params": [
+                {
+                    "name": "x",
+                    "description": "x轴位置",
+                    "type": "Number"
+                },
+                {
+                    "name": "y",
+                    "description": "y轴位置",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "返回矩形对象this的引用",
+                "type": "Rect"
+            },
+            "class": "Rect",
+            "module": "shape"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 555,
+            "description": "将矩形放大或者缩小",
+            "itemtype": "method",
+            "name": "resize",
+            "params": [
+                {
+                    "name": "w",
+                    "description": "宽度的增量",
+                    "type": "Number"
+                },
+                {
+                    "name": "h",
+                    "description": "高度的增量",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "返回矩形对象this的引用",
+                "type": "Rect"
+            },
+            "class": "Rect",
+            "module": "shape"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 572,
+            "description": "将矩形改变到特定大小",
+            "itemtype": "method",
+            "name": "resizeTo",
+            "params": [
+                {
+                    "name": "width",
+                    "description": "宽度",
+                    "type": "Number"
+                },
+                {
+                    "name": "height",
+                    "description": "高度",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "返回矩形对象this的引用",
+                "type": "Rect"
+            },
+            "class": "Rect",
+            "module": "shape"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 612,
+            "description": "圆对象的初始化函数",
+            "itemtype": "method",
+            "name": "init",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "初始化参数",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "x",
+                            "description": "圆心的x坐标,默认`100`",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "y",
+                            "description": "圆心的y坐标,默认`100`",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "r",
+                            "description": "圆的半径, 默认`100`",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "startAngle",
+                            "description": "开始画圆的开始角度, 默认`0`",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "endAngle",
+                            "description": "圆的开始角度结束角度, 默认`2*PI`",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "antiClock",
+                            "description": "逆时针画圆，默认`true`",
+                            "type": "Boolean"
+                        },
+                        {
+                            "name": "style",
+                            "description": "圆的颜色, 默认`red`",
+                            "type": "String"
+                        },
+                        {
+                            "name": "isFill",
+                            "description": "是否填充圆, 默认`true`",
+                            "type": "Boolean"
+                        }
+                    ]
+                }
+            ],
+            "return": {
+                "description": "返回实例Circle的引用",
+                "type": "Circle"
+            },
+            "class": "Circle",
+            "module": "shape"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 644,
+            "description": "设置参数\n圆对象的初始化函数",
+            "itemtype": "method",
+            "name": "setOptions",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "初始化参数",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "x",
+                            "description": "圆心的x坐标,默认`100`",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "y",
+                            "description": "圆心的y坐标,默认`100`",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "r",
+                            "description": "圆的半径, 默认`100`",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "startAngle",
+                            "description": "开始画圆的开始角度, 默认`0`",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "endAngle",
+                            "description": "圆的开始角度结束角度, 默认`2*PI`",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "antiClock",
+                            "description": "逆时针画圆，默认`true`",
+                            "type": "Boolean"
+                        },
+                        {
+                            "name": "style",
+                            "description": "圆的颜色, 默认`red`",
+                            "type": "String"
+                        },
+                        {
+                            "name": "isFill",
+                            "description": "是否填充圆, 默认`true`",
+                            "type": "Boolean"
+                        }
+                    ]
+                }
+            ],
+            "return": {
+                "description": "返回实例Circle的引用",
+                "type": "Circle"
+            },
+            "class": "Circle",
+            "module": "shape"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 672,
+            "description": "绘制圆形",
+            "itemtype": "method",
+            "name": "draw",
+            "return": {
+                "description": "返回Circle实例this的引用",
+                "type": "Circle"
+            },
+            "class": "Circle",
+            "module": "shape"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 693,
+            "description": "将圆形移动一定距离",
+            "itemtype": "method",
+            "name": "move",
+            "params": [
+                {
+                    "name": "dx",
+                    "description": "x轴上的增量",
+                    "type": "Number"
+                },
+                {
+                    "name": "dy",
+                    "description": "y轴上的增量",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "返回Circle实例this的引用",
+                "type": "Circle"
+            },
+            "class": "Circle",
+            "module": "shape"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 709,
+            "description": "将圆形移动到特定位置",
+            "itemtype": "method",
+            "name": "moveTo",
+            "params": [
+                {
+                    "name": "x",
+                    "description": "x轴位置",
+                    "type": "Number"
+                },
+                {
+                    "name": "y",
+                    "description": "y轴位置",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "返回Circle实例this的引用",
+                "type": "Circle"
+            },
+            "class": "Circle",
+            "module": "shape"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 725,
+            "description": "放大或者缩小圆形",
+            "itemtype": "method",
+            "name": "resize",
+            "params": [
+                {
+                    "name": "dr",
+                    "description": "半径增量",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "返回Circle实例this的引用",
+                "type": "Circle"
+            },
+            "class": "Circle",
+            "module": "shape"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 738,
+            "description": "将圆形改变到特定大小",
+            "itemtype": "method",
+            "name": "resizeTo",
+            "params": [
+                {
+                    "name": "r",
+                    "description": "半径",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "返回Circle实例this的引用",
+                "type": "Circle"
+            },
+            "class": "Circle",
+            "module": "shape"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 772,
+            "description": "参数初始化",
+            "itemtype": "method",
+            "name": "init",
+            "params": [
+                {
+                    "name": "text",
+                    "description": "文本内容",
+                    "type": "String"
+                },
+                {
+                    "name": "options",
+                    "description": "初始化参数",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "x",
+                            "description": "文本的x坐标,默认`100`",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "y",
+                            "description": "文本的y坐标,默认`100`",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "style",
+                            "description": "文本颜色, 默认`red`",
+                            "type": "String"
+                        },
+                        {
+                            "name": "isFill",
+                            "description": "是否填充文本, 默认`true`",
+                            "type": "Boolean"
+                        },
+                        {
+                            "name": "font",
+                            "description": "字体类型, 默认`14px sans-serif`",
+                            "type": "String"
+                        }
+                    ]
+                }
+            ],
+            "return": {
+                "description": "返回实例Text的引用",
+                "type": "Text"
+            },
+            "class": "Text",
+            "module": "shape"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 801,
+            "description": "设置参数",
+            "itemtype": "method",
+            "name": "setoptions",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "参数列表",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "x",
+                            "description": "文本的x坐标,默认`100`",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "y",
+                            "description": "文本的y坐标,默认`100`",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "style",
+                            "description": "文本颜色, 默认`red`",
+                            "type": "String"
+                        },
+                        {
+                            "name": "isFill",
+                            "description": "是否填充文本, 默认`true`",
+                            "type": "Boolean"
+                        },
+                        {
+                            "name": "font",
+                            "description": "字体类型, 默认`14px sans-serif`",
+                            "type": "String"
+                        }
+                    ]
+                }
+            ],
+            "return": {
+                "description": "返回实例Text的引用",
+                "type": "Text"
+            },
+            "class": "Text",
+            "module": "shape"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 825,
+            "description": "将文字渲染到canvas",
+            "itemtype": "method",
+            "name": "draw",
+            "return": {
+                "description": "返回实例Text的引用",
+                "type": "Text"
+            },
+            "class": "Text",
+            "module": "shape"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 848,
+            "description": "判断对象是否是矩形",
+            "itemtype": "method",
+            "name": "isRect",
+            "static": 1,
+            "params": [
+                {
+                    "name": "目标对象",
+                    "description": "",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "shape为矩形返回true",
+                "type": "Boolean"
+            },
+            "class": "shape",
+            "module": "shape"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 860,
+            "description": "判断对象是否是Circle",
+            "itemtype": "method",
+            "name": "isCircle",
+            "static": 1,
+            "params": [
+                {
+                    "name": "目标对象",
+                    "description": "",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "shape为圆返回true",
+                "type": "Boolean"
+            },
+            "class": "shape",
+            "module": "shape"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 872,
+            "description": "判断对象是否是Text",
+            "itemtype": "method",
+            "name": "isText",
+            "static": 1,
+            "params": [
+                {
+                    "name": "目标对象",
+                    "description": "",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "shape为文本对象返回true",
+                "type": "Boolean"
+            },
+            "class": "shape",
+            "module": "shape"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 985,
+            "description": "记录键盘按下的键,并运行注册在该事件上的函数",
+            "class": "shape",
+            "module": "input"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1006,
+            "description": "记录键盘松开的键,并运行注册在该事件上的函数",
+            "class": "shape",
+            "module": "input"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1029,
+            "description": "判断某个键是否按下",
+            "itemtype": "method",
+            "name": "isPressed",
+            "static": 1,
+            "params": [
+                {
+                    "name": "keyName",
+                    "description": "按键名",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "如果被按下，则返回true",
+                "type": "Boolean"
+            },
+            "class": "input",
+            "module": "input"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1041,
+            "description": "禁止某个键按下的默认行为",
+            "itemtype": "method",
+            "name": "preventDefault",
+            "static": 1,
+            "params": [
+                {
+                    "name": "keyName",
+                    "description": "要禁止默认行为的按键",
+                    "type": "Array|String"
+                }
+            ],
+            "class": "input",
+            "module": "input"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1058,
+            "description": "绑定键盘按下事件, 可绑定多个事件",
+            "itemtype": "method",
+            "name": "onKeyDown",
+            "static": 1,
+            "params": [
+                {
+                    "name": "keyName",
+                    "description": "按键名字",
+                    "type": "String"
+                },
+                {
+                    "name": "handler",
+                    "description": "事件函数",
+                    "type": "Function"
+                }
+            ],
+            "class": "input",
+            "module": "input"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1074,
+            "description": "绑定键盘弹起事件, 可绑定多个事件",
+            "itemtype": "method",
+            "name": "onKeyUp",
+            "static": 1,
+            "params": [
+                {
+                    "name": "keyName",
+                    "description": "按键名字",
+                    "type": "String"
+                },
+                {
+                    "name": "handler",
+                    "description": "事件函数",
+                    "type": "Function"
+                }
+            ],
+            "class": "input",
+            "module": "input"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1090,
+            "description": "清除键盘按下事件处理程序",
+            "itemtype": "method",
+            "name": "clearDownCallbacks",
+            "static": 1,
+            "params": [
+                {
+                    "name": "keyName",
+                    "description": "按键名，为空时清除所有按键按下事件",
+                    "type": "String"
+                }
+            ],
+            "class": "input",
+            "module": "input"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1105,
+            "description": "清除键盘按键松开事件处理程序",
+            "itemtype": "method",
+            "name": "clearUpCallbacks",
+            "static": 1,
+            "params": [
+                {
+                    "name": "keyName",
+                    "description": "按键名，为空时清除所有按键松开事件",
+                    "type": "String"
+                }
+            ],
+            "class": "input",
+            "module": "input"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1129,
+            "description": "判断两个对象是否发生碰撞",
+            "itemtype": "method",
+            "name": "detection",
+            "static": 1,
+            "params": [
+                {
+                    "name": "objectA",
+                    "description": "对象A，可为圆或矩形",
+                    "type": "Rect|Circle"
+                },
+                {
+                    "name": "objectB",
+                    "description": "对象B，可为圆或矩形",
+                    "type": "Rect|Circle"
+                }
+            ],
+            "return": {
+                "description": "如果发生碰撞，则返回true, 否则false",
+                "type": "Boolean"
+            },
+            "class": "collision",
+            "module": "collision"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1210,
+            "description": "实例初始化",
+            "itemtype": "method",
+            "name": "init",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "设置循环的参数",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "fps",
+                            "description": "每秒刷新的帧数",
+                            "type": "Number"
+                        }
+                    ]
+                }
+            ],
+            "return": {
+                "description": "返回GameLoop的实例引用",
+                "type": "GameLoop"
+            },
+            "class": "GameLoop",
+            "module": "loop"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1233,
+            "description": "设置循环开始",
+            "itemtype": "method",
+            "name": "start",
+            "class": "GameLoop",
+            "module": "loop"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1248,
+            "description": "将游戏循环从暂停状态设置为运行状态",
+            "itemtype": "method",
+            "name": "run",
+            "class": "GameLoop",
+            "module": "loop"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1257,
+            "description": "将游戏循环从运行状态设置为暂停状态",
+            "itemtype": "method",
+            "name": "pause",
+            "class": "GameLoop",
+            "module": "loop"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1266,
+            "description": "将游戏循环从运行状态设置为结束",
+            "itemtype": "method",
+            "name": "end",
+            "class": "GameLoop",
+            "module": "loop"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1314,
+            "description": "初始化对象的参数",
+            "itemtype": "method",
+            "name": "init",
+            "params": [
+                {
+                    "name": "id",
+                    "description": "这组动画栅的标识名",
+                    "type": "String"
+                },
+                {
+                    "name": "src",
+                    "description": "图片对象或者在loader中的标识名",
+                    "type": "Image|String"
+                },
+                {
+                    "name": "options",
+                    "description": "动画栅的显示方式参数",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "x",
+                            "description": "动画栅在窗口上显示位置的y坐标",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "y",
+                            "description": "动画栅在窗口上显示位置的x坐标",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "beginX",
+                            "description": "选择图片的起始x坐标, 默认0",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "beginY",
+                            "description": "选择图片的起始y坐标, 默认0",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "frameSize",
+                            "description": "帧的width和height, 默认 [60,60]",
+                            "type": "Array"
+                        },
+                        {
+                            "name": "frameTotal",
+                            "description": "帧的总数, 默认, 1",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "currentIndex",
+                            "description": "当前帧的索引, 默认 0",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "duration",
+                            "description": "动画栅切换帧的时间间隔单位ms, 默认100ms",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "isLoop",
+                            "description": "是否循环显示动画栅,默认false",
+                            "type": "Boolean"
+                        }
+                    ]
+                },
+                {
+                    "name": "callback",
+                    "description": "如果isLoop为false时，显示到最后一帧时调用callback",
+                    "type": "Function"
+                }
+            ],
+            "return": {
+                "description": "返回动画栅对象的实例的引用",
+                "type": "SpriteSheet"
+            },
+            "class": "SpriteSheet",
+            "module": "spriteSheet"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1367,
+            "description": "显示下一帧",
+            "itemtype": "method",
+            "name": "nextframe",
+            "class": "SpriteSheet",
+            "module": "spriteSheet"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1376,
+            "description": "更新动画栅的逻辑数据，为draw做准备",
+            "itemtype": "method",
+            "name": "update",
+            "class": "SpriteSheet",
+            "module": "spriteSheet"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1391,
+            "description": "在窗口中渲染出动画帧",
+            "class": "SpriteSheet",
+            "module": "spriteSheet"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1458,
+            "description": "Sprite对象实例初始化",
+            "itemtype": "method",
+            "name": "init",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "精灵对象的初始参数",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "x",
+                            "description": "精灵在窗口的初始位置的x坐标",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "y",
+                            "description": "精灵在窗口的初始位置的y坐标",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "imgX",
+                            "description": "如果精灵是以静态图片显示,图片的坐标x",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "imgY",
+                            "description": "如果图片的y坐标",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "width",
+                            "description": "精灵的实际宽度",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "height",
+                            "description": "精灵的实际高度",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "angle",
+                            "description": "精灵旋转角度",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "speedX",
+                            "description": "精灵在x坐标上的移动速度",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "speedY",
+                            "description": "精灵在y坐标上的移动速度",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "aX",
+                            "description": "精灵在x坐标上的加速度",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "aY",
+                            "description": "精灵在y坐标上的加速度",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "maxSpeedX",
+                            "description": "精灵在x坐标上的最大移动速度",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "maxSpeedY",
+                            "description": "精灵在y坐标上的最大移动速度",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "maxX",
+                            "description": "精灵在地图中的x坐标上的最远位置",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "maxY",
+                            "description": "精灵在地图中的y坐标上的最远位置",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "minX",
+                            "description": "精灵在地图中的x坐标上的最小位置",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "minY",
+                            "description": "精灵在地图中的y坐标上的最大位置",
+                            "type": "Number"
+                        }
+                    ]
+                }
+            ],
+            "return": {
+                "description": "返回Sprite的实例引用",
+                "type": "Sprite"
+            },
+            "class": "Sprite",
+            "module": "sprite"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1533,
+            "description": "返回包含该sprite的矩形对象",
+            "itemtype": "method",
+            "name": "getRect",
+            "class": "Sprite",
+            "module": "sprite"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1547,
+            "description": "返回该sprite的position信息",
+            "itemtype": "method",
+            "name": "getPosition",
+            "return": {
+                "description": "",
+                "type": "Object"
+            },
+            "class": "Sprite",
+            "module": "sprite"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1560,
+            "description": "设置sprite的位置",
+            "itemtype": "method",
+            "name": "setPosition",
+            "params": [
+                {
+                    "name": "pos",
+                    "description": "目标位置",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "x",
+                            "description": "目标位置x坐标",
+                            "type": "Int"
+                        },
+                        {
+                            "name": "y",
+                            "description": "目标位置y坐标",
+                            "type": "Int"
+                        }
+                    ]
+                }
+            ],
+            "return": {
+                "description": "返回当前对象的引用",
+                "type": "Object"
+            },
+            "class": "Sprite",
+            "module": "sprite"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1575,
+            "description": "添加动画",
+            "itemtype": "method",
+            "name": "addAnimation",
+            "params": [
+                {
+                    "name": "spriteSheet",
+                    "description": "动画栅SpriteSheet对象",
+                    "type": "SpriteSheet"
+                }
+            ],
+            "class": "Sprite",
+            "module": "sprite"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1585,
+            "description": "设置当前的显示动画",
+            "itemtype": "method",
+            "name": "setCurrentAnimation",
+            "params": [
+                {
+                    "name": "id",
+                    "description": "动画栅的标识名或者动画栅SpriteSheet对象",
+                    "type": "String|SpriteSheet"
+                }
+            ],
+            "class": "Sprite",
+            "module": "sprite"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1604,
+            "description": "判断当前动画是否为该id的动画",
+            "itemtype": "method",
+            "name": "isCurrentAnimation",
+            "params": [
+                {
+                    "name": "id",
+                    "description": "动画栅的标识名或者动画栅SpriteSheet对象",
+                    "type": "String|SpriteSheet"
+                }
+            ],
+            "class": "Sprite",
+            "module": "sprite"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1618,
+            "description": "设置当前显示图像",
+            "itemtype": "method",
+            "name": "setCurrentImage",
+            "params": [
+                {
+                    "name": "name",
+                    "description": "图片在loader中标识名",
+                    "type": "String"
+                },
+                {
+                    "name": "imgX",
+                    "description": "目标图像在原图中的x坐标",
+                    "type": "Number"
+                },
+                {
+                    "name": "imgY",
+                    "description": "目标图像在原图中y坐标",
+                    "type": "Number"
+                }
+            ],
+            "class": "Sprite",
+            "module": "sprite"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1637,
+            "description": "判断当前图像是否为该图像",
+            "itemtype": "method",
+            "name": "isCurrentImage",
+            "params": [
+                {
+                    "name": "name",
+                    "description": "图片在loader中标识名",
+                    "type": "String"
+                },
+                {
+                    "name": "imgX",
+                    "description": "目标图像在原图中的x坐标",
+                    "type": "Number"
+                },
+                {
+                    "name": "imgY",
+                    "description": "目标图像在原图中y坐标",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "如果返回为当前图片，返回true，否则false",
+                "type": "Boolean"
+            },
+            "class": "Sprite",
+            "module": "sprite"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1654,
+            "description": "设置移动参数",
+            "itemtype": "method",
+            "name": "setMovement",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "sprite的移动参数",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "speedX",
+                            "description": "精灵在x坐标上的移动速度",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "speedY",
+                            "description": "精灵在y坐标上的移动速度",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "aX",
+                            "description": "精灵在x坐标上的加速度",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "aY",
+                            "description": "精灵在y坐标上的加速度",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "maxSpeedX",
+                            "description": "精灵在x坐标上的最大移动速度",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "maxSpeedY",
+                            "description": "精灵在y坐标上的最大移动速度",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "maxX",
+                            "description": "精灵在地图中的x坐标上的最远位置",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "maxY",
+                            "description": "精灵在地图中的y坐标上的最远位置",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "minX",
+                            "description": "精灵在地图中的x坐标上的最小位置",
+                            "type": "Number"
+                        },
+                        {
+                            "name": "minY",
+                            "description": "精灵在地图中的y坐标上的最大位置",
+                            "type": "Number"
+                        }
+                    ]
+                }
+            ],
+            "class": "Sprite",
+            "module": "sprite"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1694,
+            "description": "重置移动参数回到静止状态",
+            "itemtype": "method",
+            "name": "resetMovement",
+            "class": "Sprite",
+            "module": "sprite"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1712,
+            "description": "更新位置和帧动画",
+            "itemtype": "method",
+            "name": "update",
+            "class": "Sprite",
+            "module": "sprite"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1755,
+            "description": "绘制出sprite",
+            "itemtype": "method",
+            "name": "draw",
+            "class": "Sprite",
+            "module": "sprite"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1769,
+            "description": "移动一定距离",
+            "itemtype": "method",
+            "name": "move",
+            "params": [
+                {
+                    "name": "dx",
+                    "description": "x方向上的增量",
+                    "type": "Number"
+                },
+                {
+                    "name": "dy",
+                    "description": "y方向上的增量",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "返回this的引用",
+                "type": "Sprite"
+            },
+            "class": "Sprite",
+            "module": "sprite"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1787,
+            "description": "移动到指定的位置",
+            "itemtype": "method",
+            "name": "moveTo",
+            "params": [
+                {
+                    "name": "x",
+                    "description": "x轴的位置",
+                    "type": "Number"
+                },
+                {
+                    "name": "y",
+                    "description": "y轴的位置",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "返回this的引用",
+                "type": "Sprite"
+            },
+            "class": "Sprite",
+            "module": "sprite"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1801,
+            "description": "旋转一定角度",
+            "itemtype": "method",
+            "name": "rotate",
+            "params": [
+                {
+                    "name": "da",
+                    "description": "旋转的增量",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "返回this的引用",
+                "type": "Sprite"
+            },
+            "class": "Sprite",
+            "module": "sprite"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1813,
+            "description": "旋转到指定的角度",
+            "itemtype": "method",
+            "name": "rotateTo",
+            "params": [
+                {
+                    "name": "a",
+                    "description": "旋转到指定的角度值",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "返回this的引用",
+                "type": "Sprite"
+            },
+            "class": "Sprite",
+            "module": "sprite"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1826,
+            "description": "改变一定尺寸",
+            "itemtype": "method",
+            "name": "resize",
+            "params": [
+                {
+                    "name": "dw",
+                    "description": "width放大的增量",
+                    "type": "Number"
+                },
+                {
+                    "name": "dh",
+                    "description": "height放大的增量",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "返回this的引用",
+                "type": "Sprite"
+            },
+            "class": "Sprite",
+            "module": "sprite"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1840,
+            "description": "改变到一定尺寸",
+            "itemtype": "method",
+            "name": "resize",
+            "params": [
+                {
+                    "name": "width",
+                    "description": "宽的值",
+                    "type": "Number"
+                },
+                {
+                    "name": "height",
+                    "description": "高的值",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "返回this的引用",
+                "type": "Sprite"
+            },
+            "class": "Sprite",
+            "module": "sprite"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1854,
+            "itemtype": "method",
+            "name": "destroy",
+            "class": "Sprite",
+            "module": "sprite"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1897,
+            "description": "初始化函数",
+            "itemtype": "method",
+            "name": "init",
+            "prama": "{Object} options 可选参数",
+            "params": [
+                {
+                    "name": "options.width",
+                    "description": "显示窗口宽度",
+                    "type": "Number"
+                },
+                {
+                    "name": "options.height",
+                    "description": "显示窗口高度",
+                    "type": "Number"
+                },
+                {
+                    "name": "options.imgWidth",
+                    "description": "背景图片宽度",
+                    "type": "Number"
+                },
+                {
+                    "name": "options.imgHeight",
+                    "description": "背景图片高度",
+                    "type": "Number"
+                },
+                {
+                    "name": "options.x",
+                    "description": "背景图片可见的x坐标",
+                    "type": "Number"
+                },
+                {
+                    "name": "options.y",
+                    "description": "背景图片可见的y坐标",
+                    "type": "Number"
+                },
+                {
+                    "name": "options.centerX",
+                    "description": "被控制精灵可活动区间的中间位置",
+                    "type": "Number"
+                },
+                {
+                    "name": "options.activityInterval",
+                    "description": "被控制精灵可活动区间宽度的1/2",
+                    "type": "Number"
+                },
+                {
+                    "name": "options.isLoop",
+                    "description": "背景图片是否循环",
+                    "type": "Boolean"
+                },
+                {
+                    "name": "options.onEnd",
+                    "description": "背景图片是不循环时滚动到终点的回调函数\nreturn {Scene} 返回场景实例的引用",
+                    "type": "Function"
+                }
+            ],
+            "class": "Scene",
+            "module": "scene"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1954,
+            "description": "设置被控制的精灵对象",
+            "itemtype": "method",
+            "name": "setCenterPlayer",
+            "params": [
+                {
+                    "name": "sprite",
+                    "description": "被控制的对象",
+                    "type": "Sprite"
+                }
+            ],
+            "class": "Scene",
+            "module": "scene"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1964,
+            "description": "设置滚动开始",
+            "itemtype": "method",
+            "name": "centerPlayer",
+            "class": "Scene",
+            "module": "scene"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1973,
+            "description": "清除滚动模式",
+            "itemtype": "method",
+            "name": "clearCenterPlayer",
+            "class": "Scene",
+            "module": "scene"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 1982,
+            "description": "逻辑更新，调整场景参数及各个其他物体的位置",
+            "itemtype": "method",
+            "name": "update",
+            "class": "Scene",
+            "module": "scene"
+        },
+        {
+            "file": "src/ezGame.js",
+            "line": 2049,
+            "description": "绘制场景",
+            "itemtype": "method",
+            "name": "draw",
+            "class": "Scene",
+            "module": "scene"
+        }
+    ],
+    "warnings": [
+        {
+            "message": "unknown tag: prama",
+            "line": " src/ezGame.js:231"
+        },
+        {
+            "message": "unknown tag: attribue",
+            "line": " src/ezGame.js:311"
+        },
+        {
+            "message": "unknown tag: attribue",
+            "line": " src/ezGame.js:318"
+        },
+        {
+            "message": "unknown tag: attribue",
+            "line": " src/ezGame.js:325"
+        },
+        {
+            "message": "unknown tag: attribue",
+            "line": " src/ezGame.js:332"
+        },
+        {
+            "message": "unknown tag: attribue",
+            "line": " src/ezGame.js:339"
+        },
+        {
+            "message": "unknown tag: attribue",
+            "line": " src/ezGame.js:346"
+        },
+        {
+            "message": "unknown tag: prama",
+            "line": " src/ezGame.js:420"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " src/ezGame.js:479"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " src/ezGame.js:502"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " src/ezGame.js:520"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " src/ezGame.js:538"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " src/ezGame.js:555"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " src/ezGame.js:572"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " src/ezGame.js:672"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " src/ezGame.js:693"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " src/ezGame.js:709"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " src/ezGame.js:725"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " src/ezGame.js:738"
+        },
+        {
+            "message": "unknown tag: prama",
+            "line": " src/ezGame.js:1897"
+        },
+        {
+            "message": "unknown tag: prama",
+            "line": " src/ezGame.js:1897"
+        },
+        {
+            "message": "Missing item type\n图片总数",
+            "line": " src/ezGame.js:311"
+        },
+        {
+            "message": "Missing item type\n图片已加载数",
+            "line": " src/ezGame.js:318"
+        },
+        {
+            "message": "Missing item type\n图片已加载百分比",
+            "line": " src/ezGame.js:325"
+        },
+        {
+            "message": "Missing item type\n正在加载中的图片",
+            "line": " src/ezGame.js:332"
+        },
+        {
+            "message": "Missing item type\n已加载完成的图片集合",
+            "line": " src/ezGame.js:339"
+        },
+        {
+            "message": "Missing item type\n加载失败的图片集",
+            "line": " src/ezGame.js:346"
+        },
+        {
+            "message": "Missing item type\n更新right和bottom的值",
+            "line": " src/ezGame.js:420"
+        },
+        {
+            "message": "Missing item type\n记录键盘按下的键,并运行注册在该事件上的函数",
+            "line": " src/ezGame.js:985"
+        },
+        {
+            "message": "Missing item type\n记录键盘松开的键,并运行注册在该事件上的函数",
+            "line": " src/ezGame.js:1006"
+        },
+        {
+            "message": "Missing item type\n在窗口中渲染出动画帧",
+            "line": " src/ezGame.js:1391"
+        }
+    ]
+}
