@@ -80,8 +80,40 @@
                 func.call(parent, this);
             }
 
-        }
+        },
 
+        /**
+         * 更新游戏逻辑，包括所有精灵及场景
+         * @method update
+         * @for ezGame
+         */
+        update: function () {
+            for (var i = 0, len = this.spriteList.length; i < len; i++) {
+                this.spriteList[i].update();
+                if(this.spriteList[i].toDelete) {
+                    this.spriteList.splice(i, 1);
+                    len--;
+                    i--;
+                }
+            } 
+            if (this.inScene instanceof this.scene.Scene) {
+                this.inScene.update(this.spriteList);
+            }
+        },
+
+        /**
+         * 渲染游戏界面，包括所有精灵及场景
+         * @method draw
+         * @for ezGame
+         */
+        draw: function () {
+            if (this.inScene instanceof this.scene.Scene) {
+                this.inScene.draw();
+            }
+            for (var i = 0, len = this.spriteList.length; i < len; i++) {
+                this.spriteList[i].draw();
+            } 
+        }
     };
     window["ezGame"] = ezGame;
 })(window);
@@ -1817,8 +1849,17 @@ ezGame.register("sprite", function(eg) {
             this.width = width;
             this.height = height;
             return this;
+        },
+
+        /** 析构函数，删除该对象，释放内存
+         * @method destroy
+         * @for Sprite
+         */
+        destroy: function () {
+            this.toDelete = true;
         }
     }
+
     this.Sprite = Sprite;
 });
 
@@ -1831,8 +1872,8 @@ ezGame.register("scene", function(eg) {
      * 场景对象
      * @class Scene
      * @constructor
-     * @prama {Object|string} image 场景的背景图片
-     * @prama {Object} options 可选参数
+     * @param {Object|string} image 场景的背景图片
+     * @param {Object} options 可选参数
      * @param {number} options.width 显示窗口宽度
      * @param {number} options.height 显示窗口高度
      * @param {number} options.imgWidth 背景图片宽度
@@ -1878,8 +1919,8 @@ ezGame.register("scene", function(eg) {
             var defaultOptions = {
                 width: eg.width,
                 height: eg.height,
-                imgWidth: image.width,
-                imgHeight: image.height,
+                imgWidth: this.image.width,
+                imgHeight: this.image.height,
                 x: 0,
                 y: 0,
                 centerX: eg.width / 2,
@@ -1950,10 +1991,6 @@ ezGame.register("scene", function(eg) {
                     // 背景左滚
                     if (this.player.x > this.centerX + this.activityInterval) {
                         var offsetX = this.player.x - this.centerX - this.activityInterval;
-                        if (this.imgWidth < this.x + this.width) {
-                            this.x = 0;
-                        }
-
                         this.x += offsetX;
                         if (spriteList) {
                             for (var i = 0, len = spriteList.length; i < len; i++) {
@@ -1964,12 +2001,13 @@ ezGame.register("scene", function(eg) {
                         }
                         this.curPos.x += offsetX;
                         this.player.x = this.centerX + this.activityInterval;
+
+                        if (this.imgWidth < this.x + this.width) {
+                            this.x = 0;
+                        }
                     }
                     if (this.player.x < this.centerX - this.activityInterval) {
                         var offsetX = this.centerX - this.activityInterval - this.player.x;
-                        if (this.x < 0) {
-                            this.x = this.imgWidth - this.width;
-                        }
                         this.x -= offsetX;
                         if (spriteList) {
                             for (var i = 0, len = spriteList.length; i < len; i++) {
@@ -1980,6 +2018,10 @@ ezGame.register("scene", function(eg) {
                         }
                         this.curPos.x -= offsetX;
                         this.player.x = this.centerX - this.activityInterval;
+
+                        if (this.x < 0) {
+                            this.x = this.imgWidth - this.width;
+                        }
                     }
                 }
                 // 背景不循环

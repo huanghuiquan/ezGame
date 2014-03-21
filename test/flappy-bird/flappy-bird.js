@@ -53,7 +53,6 @@ window.onload = function() {
 
         this.constructor.uber.update.call(this);
 
-        console.log(this.y);
         if(this.y >= 320) {
             this.y = 320;
             setTimeout(gameLoop.end, 0);
@@ -79,7 +78,7 @@ window.onload = function() {
 
     Pillar.prototype.update = function () {
         this.constructor.uber.update.call(this);
-        if (this.x < 0) {
+        if (this.x < -40) {
             this.destroy();
         }
         if (this.x < 400 && this.score) {
