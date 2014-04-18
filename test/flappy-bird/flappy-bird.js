@@ -26,8 +26,10 @@ window.onload = function() {
 
     var Bird = function(options) {
         this.init(options);
-        this.addAnimation(new SpriteSheet('bird-static', 'bird', {
-            frameSize: [40, 40]
+        this.addAnimation(new SpriteSheet('bird-fly', 'bird', {
+            frameSize: [40, 30],
+            isLoop: true,
+            frameTotal: 3
         }));
     };
     utils.inherit(Bird, Sprite);
@@ -53,8 +55,8 @@ window.onload = function() {
 
         this.constructor.uber.update.call(this);
 
-        if(this.y >= 320) {
-            this.y = 320;
+        if(this.y >= 330) {
+            this.y = 330;
             setTimeout(gameLoop.end, 0);
         }
     };
@@ -142,7 +144,7 @@ window.onload = function() {
     var loaderCompleted = function() {
         game.inScene = new Scene('background', { width: 800, height: 400, centerX: 400, isLoop: true });
         var bird = new Bird({ x: 400, y: 200, width: 40, height: 40 });
-        bird.setCurrentAnimation('bird-static');
+        bird.setCurrentAnimation('bird-fly');
 
         game.inScene.draw();
         bird.update();
@@ -157,7 +159,7 @@ window.onload = function() {
             setInterval(function (){
                 var index = Math.floor(Math.random() * pillarsMap.length);
                 for (var i = 0; i < pillarsMap[index].length; i++) {
-                    game.spriteList.push(new Pillar({x: 800, y: pillarsMap[index][i] * 40, width: 40, height: 40}));
+                    game.spriteList.unshift(new Pillar({x: 800, y: pillarsMap[index][i] * 40, width: 40, height: 40}));
                 }
             }, 1000);
 
